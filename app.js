@@ -33,8 +33,13 @@ async function main() {
     const db = await dbConnection();
     await db.dropDatabase();
 
-    // Close Connection to DB
-    await closeConnection();
+    app.listen(3000, () => {
+        console.log("We've now got a server!");
+        console.log('Your routes will be running on http://localhost:3000');
+    });
+
+    // // Close Connection to DB
+    // await closeConnection();
 }
 
 main();
