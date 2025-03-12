@@ -17,7 +17,7 @@ async function testCase(func, ...args) {
 }
 
 // TODO: Modify the collection name to users -- please refer to lab4
-import { movies } from "./config/mongoCollections.js";
+import { users, posts, comments } from "./config/mongoCollections.js";
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 // TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
 // import { createMovie, getAllMovies, getMovieById, removeMovie, renameMovie } from "./data/movies.js";
