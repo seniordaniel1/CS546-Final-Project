@@ -12,11 +12,11 @@ const exportedMethods = {
     getPostById: async (postId) => {
     },
     // TODO: Populate function to remove post by Id
-    removeUser: async (postId) => {
+    removePost: async (postId) => {
     },
     // TODO: Determine what arguments are needed to update an existing post
     // TODO: Populate function to update post
-    updateUser: async () => {
+    updatePost: async () => {
     }
 }
 
