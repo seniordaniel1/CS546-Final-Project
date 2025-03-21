@@ -1,3 +1,44 @@
+// TODO: Modify the collection name to users -- please refer to lab4
+import { dbConnection, closeConnection } from "./config/mongoConnection.js";
+// TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
+import { userData } from "./data/index.js";
+import express from 'express';
+
+// TODO: Update Routes 
+import configRoutesFunction from './routes/index.js';
+
+
+const app = express();
+app.use(express.json()); // Middleware to parse JSON bodies
+
+// Connect to the database and reset it before starting the server
+async function startServer() {
+    try {
+        const db = await dbConnection();
+        await db.dropDatabase(); // Reset the database
+
+        // Configure routes after the database is ready
+        configRoutesFunction(app);
+
+        // Start the server
+        app.listen(3000, () => {
+            console.log("We've now got a server!");
+            console.log('Your routes will be running on http://localhost:3000');
+        });
+
+        await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+        await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+        console.log(await userData.getAllUsers())
+    } catch (error) {
+        console.error('Error starting the server:', error);
+    }
+}
+
+// Call the function to start the server
+startServer();
+
+
+
 /**
  * In a try-catch block, console.log whats returned from the function. If it throws an error, console.log the error. 
  * This stops the need to create multiple try-catch blocks to check for errors when running a function 
@@ -15,31 +56,3 @@ async function testCase(func, ...args) {
         console.log(error)
     }
 }
-
-// TODO: Modify the collection name to users -- please refer to lab4
-import { users, posts, comments } from "./config/mongoCollections.js";
-import { dbConnection, closeConnection } from "./config/mongoConnection.js";
-// TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
-// import { createMovie, getAllMovies, getMovieById, removeMovie, renameMovie } from "./data/movies.js";
-import express from 'express';
-// TODO: Update Routes 
-import configRoutesFunction from './routes/index.js';
-
-async function main() {
-    const app = express();
-    configRoutesFunction(app);
-
-    // Reset database everytime this is run
-    const db = await dbConnection();
-    await db.dropDatabase();
-
-    app.listen(3000, () => {
-        console.log("We've now got a server!");
-        console.log('Your routes will be running on http://localhost:3000');
-    });
-
-    // // Close Connection to DB
-    // await closeConnection();
-}
-
-main();
