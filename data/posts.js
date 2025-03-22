@@ -79,7 +79,6 @@ const exportedMethods = {
         }
         return ans;
     },
-    // TODO: Populate function to remove post by Id
     removePost: async (postId) => {
         // Validate inputs 
         await checkInputsExistence([postId])
@@ -93,7 +92,7 @@ const exportedMethods = {
         // Delete post from post database
         const postCollection = await posts();
         const deletionInfo = await postCollection.findOneAndDelete({
-            _id: new ObjectId(postId)
+            _id: new ObjectId(currPost._id)
         });
         // Validate that deletion was successful
         if (!deletionInfo) {
@@ -109,10 +108,6 @@ const exportedMethods = {
 
         return { ...currPost, deleted: true };
     },
-    // TODO: Determine what arguments are needed to update an existing post
-    // TODO: Populate function to update post
-    updatePost: async () => {
-    },
     getPostById: async (postId) => {
         // Validate input 
         await checkInputsExistence([postId])
@@ -124,7 +119,12 @@ const exportedMethods = {
 
         // Get all posts and find post by id 
         const postCollection = await posts();
-        const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+        let post;
+        try {
+            post = await postCollection.findOne({ _id: new ObjectId(postId) });
+        } catch (error) {
+            console.log("error", error);
+        }
 
         // If post is not found, throw an error 
         if (post === null) throw new Error('No post with that id');
@@ -136,7 +136,7 @@ const exportedMethods = {
     removePostsByUserId: async (userId) => {
         const posts = await exportedMethods.getPostsByUserId(userId);
         for (const post of posts) {
-            exportedMethods.removePost(post._id);
+            await exportedMethods.removePost(post._id);
         }
     }
 }

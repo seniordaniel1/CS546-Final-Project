@@ -68,7 +68,6 @@ const exportedMethods = {
         const currUser = await exportedMethods.getUserById(newId);
         return currUser;
     },
-    
     getAllUsers: async () => {
         const userCollection = await users();
         let userList = await userCollection.find({}).toArray();
@@ -79,7 +78,6 @@ const exportedMethods = {
         });
         return userList;
     },
-    
     getUserById: async (userId) => {
         // Validate input 
         await checkInputsExistence([userId])
@@ -100,7 +98,6 @@ const exportedMethods = {
         user._id = user._id.toString();
         return user;
     },
-    
     removeUser: async (userId) => {
         await checkInputsExistence([userId])
         await checkNumArguments([userId], 1, "removeUserById");
@@ -108,13 +105,14 @@ const exportedMethods = {
         await validateUserIdAndReturnTrimmedId(userId);
 
         const currMovie = await exportedMethods.getUserById(userId);
-
-        // TODO: Before deleting the userID from the user database, we need to delete all connected data
-            // users.posts => References posts that the user has created
-            // users.comments => References comments that the user has created
         
-        
+        // Delete all posts that the user created
+        await postData.removePostsByUserId(userId);
 
+        // TODO: Delete all comments that the user created
+
+
+        // Delete user from user collections
         const userCollection = await users();
         const deletionInfo = await userCollection.findOneAndDelete({
             _id: new ObjectId(userId)
@@ -126,61 +124,6 @@ const exportedMethods = {
 
         return { ...currMovie, deleted: true };
     },
-    
-    updateUser: async (id, firstName, lastName, email, username, age, password, followers, following, posts, comments) => {
-        // Validate inputs 
-        const currArgs = [id, firstName, lastName, email, username, age, password, followers, following, posts, comments];
-        await checkInputsExistence(currArgs);
-        await checkNumArguments(currArgs, 11, "updateUser");
-
-        // Trim all arguments  
-        const trimmedArgs = await trimArguments(currArgs);
-        id = await validateUserIdAndReturnTrimmedId(id);
-        firstName = trimmedArgs[1];
-        lastName = trimmedArgs[2];
-        email = trimmedArgs[3];
-        username = trimmedArgs[4];
-        age = trimmedArgs[5];
-        password = trimmedArgs[6]
-        followers = await trimArguments(followers);
-        following = await trimArguments(following);
-        posts = await trimArguments(posts);
-        comments = await trimArguments(comments);
-
-        // Validate if names are valid 
-        await validateName(firstName, "updateUser-firstName");
-        await validateName(lastName, "updateUser-lastName");
-
-        // Validate if email input is a valid email
-        await validateEmail(email, 'updateUser-emailAddress')
-
-        // Validate if username are valid inputs
-        await validateUsername(username, "updateUser-username")
-
-        // Validate is age is a valid input
-        await validateAge(age, "updateUser-validateAge");
-
-        // Validate that list of followers & following are valid user IDs
-        await validateListUserIds(followers);
-        await validateListUserIds(following);
-
-
-
-        // Create new user object 
-        const newUser = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            username: username,
-            age: age,
-            password: password,
-            followers: followers,
-            following: following,
-            posts: posts,
-            comments: comments
-        }
-    },
-    
     hashPassword: async (password) => {
         // Validate inputs 
         await checkNumArguments([password], 1, "hashPassword")
