@@ -1,16 +1,23 @@
 import { users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateUserIdAndReturnTrimmedId } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateUserIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 
 const exportedMethods = {
-    // TODO: Determine what arguments are needed to create a new user 
-    // TODO: Populate function to add a user to User Collection 
     createUser: async (firstName, lastName, email, username, age, password) => {
         // Validate the number of inputs and ensure that each input exists
         const currArgs = [firstName, lastName, email, username, age, password];
         await checkNumArguments(currArgs, 6, 'createUser');
         await checkInputsExistence(currArgs);
+
+        // Trim all non-array and non-id arguments 
+        const trimmedArgs = await trimArguments(currArgs);
+        firstName = trimmedArgs[0];
+        lastName = trimmedArgs[1];
+        email = trimmedArgs[2];
+        username = trimmedArgs[3];
+        age = trimmedArgs[4];
+        password = trimmedArgs[5]
 
         // Validate if firstName and lastName are valid names
         await validateName(firstName, "createUser-firstName");
@@ -61,7 +68,6 @@ const exportedMethods = {
         return currUser;
     },
     
-    // TODO: Populate function to get all users from User collection
     getAllUsers: async () => {
         const userCollection = await users();
         let userList = await userCollection.find({}).toArray();
@@ -73,7 +79,6 @@ const exportedMethods = {
         return userList;
     },
     
-    // TODO: Populate function to get user by ID
     getUserById: async (userId) => {
         // Validate input 
         await checkInputsExistence([userId])
@@ -95,16 +100,66 @@ const exportedMethods = {
         return user;
     },
     
-    // TODO: Populate function to remove user by Id
     removeUser: async (userId) => {
+        await checkInputsExistence([userId])
+        await checkNumArguments([userId], 1, "removeUserById");
+        await isStr(userId, "removeUserById-userIdStr");
+        await validateUserIdAndReturnTrimmedId(userId);
+
+        const currMovie = await exportedMethods.getUserById(userId);
+
+        const userCollection = await users();
+        const deletionInfo = await userCollection.findOneAndDelete({
+            _id: new ObjectId(userId)
+        });
+
+        if (!deletionInfo) {
+            throw new Error(`Could not delete movie with id of ${userId}`);
+        }
+
+        return { ...currMovie, deleted: true };
     },
     
-    // TODO: Determine what arguments are needed to update an existing user
-    // TODO: Populate function to update user 
-    updateUser: async () => {
+    updateUser: async (id, firstName, lastName, email, username, age, password, followers, following, posts, comments) => {
+        // Validate inputs 
+        const currArgs = [id, firstName, lastName, email, username, age, password, followers, following, posts, comments];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 11, "updateUser");
+
+        // Trim all arguments  
+        const trimmedArgs = await trimArguments(currArgs);
+        id = await validateUserIdAndReturnTrimmedId(id);
+        firstName = trimmedArgs[1];
+        lastName = trimmedArgs[2];
+        email = trimmedArgs[3];
+        username = trimmedArgs[4];
+        age = trimmedArgs[5];
+        password = trimmedArgs[6]
+        followers = await trimArguments(followers);
+        following = await trimArguments(following);
+        posts = await trimArguments(posts);
+        comments = await trimArguments(comments);
+
+        // Validate if names are valid 
+        await validateName(firstName, "updateUser-firstName");
+        await validateName(lastName, "updateUser-lastName");
+
+        // Validate if email input is a valid email
+        await validateEmail(email, 'updateUser-emailAddress')
+
+        // Validate if username are valid inputs
+        await validateUsername(username, "updateUser-username")
+
+        // Validate is age is a valid input
+        await validateAge(age, "updateUser-validateAge");
+
+        // Validate that list of followers & following are valid user IDs
+        await validateListUserIds(followers);
+        await validateListUserIds(following);
+
+        // TODO: Complete getCommentsById and getPostsById to complete updateUser function to validate if posts and comments are valid
     },
     
-    // TODO: Convert password into hashed password and validate that password input is a string
     hashPassword: async (password) => {
         // Validate inputs 
         await checkNumArguments([password], 1, "hashPassword")

@@ -26,8 +26,11 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
-        await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+        const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+        const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+        console.log(await userData.getAllUsers())
+
+        await testCase(userData.removeUser, user1._id);
         console.log(await userData.getAllUsers())
     } catch (error) {
         console.error('Error starting the server:', error);
