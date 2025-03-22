@@ -15,23 +15,21 @@ async function usersTest() {
     // Create 2 users
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
-    console.log(await userData.getAllUsers())
-
-    // Remove 1 user
-    await testCase(userData.removeUser, user1._id);
-    console.log(await userData.getAllUsers())
+    const getAllUsers = await userData.getAllUsers()
 }
 
 async function postTest() {
     // Create a post by an existing user
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
-    
-    const posts = await testCase(postData.getAllPosts);
-    console.log("Posts:\n", posts);
+    const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
+    console.log("Before Deletion:\n", await userData.getAllUsers());
 
-    const users = await testCase(userData.getAllUsers);
-    console.log("Users:\n", users);
+    // Remove 1 user
+    await testCase(userData.removeUser, user1._id);
+    console.log("After Deletion:")
+    console.log(await userData.getAllUsers());
+    console.log(await postData.getAllPosts());
 }
 
 // Connect to the database and reset it before starting the server
@@ -50,6 +48,7 @@ async function startServer() {
         });
 
         await postTest()
+        // await usersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

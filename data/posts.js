@@ -69,7 +69,6 @@ const exportedMethods = {
         });
         return postList;
     },
-    // TODO: Populate function to get posts by user ID 
     getPostsByUserId: async (userId) => {
         const currUser = await userData.getUserById(userId);
         const currUserPosts = currUser.posts;
@@ -80,12 +79,34 @@ const exportedMethods = {
         }
         return ans;
     },
-    // TODO: Populate function to remove post by Id
     removePost: async (postId) => {
-    },
-    // TODO: Determine what arguments are needed to update an existing post
-    // TODO: Populate function to update post
-    updatePost: async () => {
+        // Validate inputs 
+        await checkInputsExistence([postId])
+        await checkNumArguments([postId], 1, "removePostrById");
+        await isStr(postId, "removePostById-postIdStr");
+        postId = await validateUserIdAndReturnTrimmedId(postId);
+
+        // Get post by Id
+        const currPost = await exportedMethods.getPostById(postId);
+
+        // Delete post from post database
+        const postCollection = await posts();
+        const deletionInfo = await postCollection.findOneAndDelete({
+            _id: new ObjectId(currPost._id)
+        });
+        // Validate that deletion was successful
+        if (!deletionInfo) {
+            throw new Error(`Could not delete movie with id of ${postId}`);
+        }
+
+        // Delete post from User database
+        const userCollection = await users();
+        userCollection.updateOne(
+            { _id: new ObjectId(deletionInfo.userId) }, 
+            { $pull: { posts: postId } } 
+        );
+
+        return { ...currPost, deleted: true };
     },
     getPostById: async (postId) => {
         // Validate input 
@@ -98,7 +119,12 @@ const exportedMethods = {
 
         // Get all posts and find post by id 
         const postCollection = await posts();
-        const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+        let post;
+        try {
+            post = await postCollection.findOne({ _id: new ObjectId(postId) });
+        } catch (error) {
+            console.log("error", error);
+        }
 
         // If post is not found, throw an error 
         if (post === null) throw new Error('No post with that id');
@@ -106,6 +132,12 @@ const exportedMethods = {
         // Convert post id to string and return post object
         post._id = post._id.toString();
         return post;
+    },
+    removePostsByUserId: async (userId) => {
+        const posts = await exportedMethods.getPostsByUserId(userId);
+        for (const post of posts) {
+            await exportedMethods.removePost(post._id);
+        }
     }
 }
 
