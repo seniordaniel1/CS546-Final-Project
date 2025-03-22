@@ -2,6 +2,7 @@ import { users } from "../config/mongoCollections.js";
 import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateUserIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
+import { postData } from "./index.js";
 
 const exportedMethods = {
     createUser: async (firstName, lastName, email, username, age, password) => {
@@ -157,7 +158,21 @@ const exportedMethods = {
         await validateListUserIds(followers);
         await validateListUserIds(following);
 
-        // TODO: Complete getCommentsById and getPostsById to complete updateUser function to validate if posts and comments are valid
+
+
+        // Create new user object 
+        const newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            username: username,
+            age: age,
+            password: password,
+            followers: followers,
+            following: following,
+            posts: posts,
+            comments: comments
+        }
     },
     
     hashPassword: async (password) => {
@@ -173,6 +188,29 @@ const exportedMethods = {
         // Hash the password using the generated salt
         const hashedPassword = bcrypt.hashSync(password, salt);
         return hashedPassword;
+    },
+    addPostToUser: async (userId, postId) => {
+        // Authenticate inputs
+        const currArgs = [userId, postId];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addPostToUser");
+        await isStr(userId, "addPostToUser-userId");
+        await isStr(postId, "addPostToUser-postId")
+
+        // Add post to user
+        const userCollection = await users();
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userId) },
+            { $push: { posts: postId } },
+            { returnDocument: 'after' }
+        )
+
+        // Validate that function was executed
+        if (!updatedInfo)
+            throw new Error('could not update movie successfully');
+        
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
     }
 }
 

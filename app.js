@@ -1,7 +1,7 @@
 // TODO: Modify the collection name to users -- please refer to lab4
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 // TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
-import { userData } from "./data/index.js";
+import { userData, postData } from "./data/index.js";
 import express from 'express';
 
 // TODO: Update Routes 
@@ -10,6 +10,29 @@ import configRoutesFunction from './routes/index.js';
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies
+
+async function usersTest() {
+    // Create 2 users
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+    console.log(await userData.getAllUsers())
+
+    // Remove 1 user
+    await testCase(userData.removeUser, user1._id);
+    console.log(await userData.getAllUsers())
+}
+
+async function postTest() {
+    // Create a post by an existing user
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
+    
+    const posts = await testCase(postData.getAllPosts);
+    console.log("Posts:\n", posts);
+
+    const users = await testCase(userData.getAllUsers);
+    console.log("Users:\n", users);
+}
 
 // Connect to the database and reset it before starting the server
 async function startServer() {
@@ -26,12 +49,8 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
-        const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
-        console.log(await userData.getAllUsers())
+        await postTest()
 
-        await testCase(userData.removeUser, user1._id);
-        console.log(await userData.getAllUsers())
     } catch (error) {
         console.error('Error starting the server:', error);
     }
