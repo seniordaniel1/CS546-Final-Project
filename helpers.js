@@ -303,3 +303,18 @@ export async function validateUserIdAndReturnTrimmedId(id) {
 
     return id;
 }
+
+export async function validateListUserIds(userIds, listName) {
+    // Validate inputs 
+    await checkNumArgs(arguments.length, 2);
+    await checkInputsExistence(Array.from(arguments));
+    await isStr(listName, "validateListUserIds");
+    await isArray(userIds, userIds);
+
+    // Loop through all user ids, if all user ids are valid nothing happens 
+    // If user id is invalid, it throws an error 
+    for (let i = 0; i < userIds.length; i++){
+        const currUser = userIds[i];
+        await userData.getUserById(currUser._id);
+    }
+}
