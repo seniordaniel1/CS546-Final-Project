@@ -14,7 +14,11 @@ const exportedMethods = {
             const currArgs = [userId, content, imageUrl];
             await checkInputsExistence(currArgs);
             await checkNumArguments(currArgs, 3, "createPostWithImage");
+            isStr(imageUrl, "createPost-imageUrl");
         }
+
+        isStr(userId, "createPost-userId");
+        isStr(content, "createPost-content");
 
         // Trim All arguments:
         userId = await validateUserIdAndReturnTrimmedId(userId);
@@ -70,6 +74,12 @@ const exportedMethods = {
         return postList;
     },
     getPostsByUserId: async (userId) => {
+        // Validate arguments
+        await checkInputsExistence([userId])
+        await checkNumArguments([userId], 1, "getPostsByUserId");
+        await isStr(userId, "getPostsByUserId-userIdStr");
+
+        // Get posts by user id 
         const currUser = await userData.getUserById(userId);
         const currUserPosts = currUser.posts;
         const ans = []
@@ -94,6 +104,7 @@ const exportedMethods = {
         const deletionInfo = await postCollection.findOneAndDelete({
             _id: new ObjectId(currPost._id)
         });
+        
         // Validate that deletion was successful
         if (!deletionInfo) {
             throw new Error(`Could not delete movie with id of ${postId}`);
@@ -134,6 +145,12 @@ const exportedMethods = {
         return post;
     },
     removePostsByUserId: async (userId) => {
+        // Validate arguments
+        await checkInputsExistence([userId])
+        await checkNumArguments([userId], 1, "removePostsByUserId");
+        await isStr(userId, "removePostsByUserId-userIdStr");
+
+        // Remove all posts made by a user 
         const posts = await exportedMethods.getPostsByUserId(userId);
         for (const post of posts) {
             await exportedMethods.removePost(post._id);
