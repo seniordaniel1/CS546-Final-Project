@@ -26,12 +26,10 @@ async function postTest() {
     // Create a post by an existing user
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
-    
-    const posts = await testCase(postData.getAllPosts);
-    console.log("Posts:\n", posts);
+    const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
 
-    const users = await testCase(userData.getAllUsers);
-    console.log("Users:\n", users);
+    const user1Posts = await testCase(postData.getPostsByUserId, user1._id);
+    console.log(user1Posts);
 }
 
 // Connect to the database and reset it before starting the server

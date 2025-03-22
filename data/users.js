@@ -109,6 +109,12 @@ const exportedMethods = {
 
         const currMovie = await exportedMethods.getUserById(userId);
 
+        // TODO: Before deleting the userID from the user database, we need to delete all connected data
+            // users.posts => References posts that the user has created
+            // users.comments => References comments that the user has created
+        
+        
+
         const userCollection = await users();
         const deletionInfo = await userCollection.findOneAndDelete({
             _id: new ObjectId(userId)

@@ -69,7 +69,6 @@ const exportedMethods = {
         });
         return postList;
     },
-    // TODO: Populate function to get posts by user ID 
     getPostsByUserId: async (userId) => {
         const currUser = await userData.getUserById(userId);
         const currUserPosts = currUser.posts;
@@ -82,6 +81,33 @@ const exportedMethods = {
     },
     // TODO: Populate function to remove post by Id
     removePost: async (postId) => {
+        // Validate inputs 
+        await checkInputsExistence([postId])
+        await checkNumArguments([postId], 1, "removePostrById");
+        await isStr(postId, "removePostById-postIdStr");
+        postId = await validateUserIdAndReturnTrimmedId(postId);
+
+        // Get post by Id
+        const currPost = await exportedMethods.getPostById(postId);
+
+        // Delete post from post database
+        const postCollection = await posts();
+        const deletionInfo = await postCollection.findOneAndDelete({
+            _id: new ObjectId(postId)
+        });
+        // Validate that deletion was successful
+        if (!deletionInfo) {
+            throw new Error(`Could not delete movie with id of ${postId}`);
+        }
+
+        // Delete post from User database
+        const userCollection = await users();
+        userCollection.updateOne(
+            { _id: new ObjectId(deletionInfo.userId) }, 
+            { $pull: { posts: postId } } 
+        );
+
+        return { ...currPost, deleted: true };
     },
     // TODO: Determine what arguments are needed to update an existing post
     // TODO: Populate function to update post
@@ -106,6 +132,12 @@ const exportedMethods = {
         // Convert post id to string and return post object
         post._id = post._id.toString();
         return post;
+    },
+    removePostsByUserId: async (userId) => {
+        const posts = await exportedMethods.getPostsByUserId(userId);
+        for (const post of posts) {
+            exportedMethods.removePost(post._id);
+        }
     }
 }
 
