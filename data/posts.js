@@ -130,12 +130,7 @@ const exportedMethods = {
 
         // Get all posts and find post by id 
         const postCollection = await posts();
-        let post;
-        try {
-            post = await postCollection.findOne({ _id: new ObjectId(postId) });
-        } catch (error) {
-            console.log("error", error);
-        }
+        const post = await postCollection.findOne({ _id: new ObjectId(postId) });
 
         // If post is not found, throw an error 
         if (post === null) throw new Error('No post with that id');
