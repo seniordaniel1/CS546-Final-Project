@@ -268,6 +268,11 @@ export async function validateAge(age, ageStr) {
         throw new Error("Age must be between 18-100");
 }
 
+/**
+ * Validate if username input is valid
+ * @param {String} username Username input
+ * @param {String} usernameStr Source of username input 
+ */
 export async function validateUsername(username, usernameStr) {
     // Validate inputs 
     await checkNumArgs(arguments.length, 2);
@@ -304,6 +309,11 @@ export async function validateUserIdAndReturnTrimmedId(id) {
     return id;
 }
 
+/**
+ * 
+ * @param {Array[String]} userIds List of User Ids to check
+ * @param {String} listName Name of list 
+ */
 export async function validateListUserIds(userIds, listName) {
     // Validate inputs 
     await checkNumArgs(arguments.length, 2);
@@ -317,4 +327,16 @@ export async function validateListUserIds(userIds, listName) {
         const currUser = userIds[i];
         await userData.getUserById(currUser._id);
     }
+}
+
+/**
+ * Function that returns todays date in MM/DD/YYYY
+ * @returns Todays date in MM/DD/YYYY
+ */
+export async function getTodayDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
 }
