@@ -105,14 +105,14 @@ const exportedMethods = {
 
         // TODO: Delete comment from User database
         const userCollection = await users();
-        userCollection.updateOne(
+        await userCollection.updateOne(
             { _id: new ObjectId(deletionInfo.userId) }, 
             { $pull: { comments: commentId } } 
         );
 
         // TODO: Delete comment from Post database
         const postCollection = await posts();
-        postCollection.updateOne(
+        await postCollection.updateOne(
             { _id: new ObjectId(deletionInfo.postId) }, 
             { $pull: { comments: commentId } } 
         )

@@ -115,7 +115,7 @@ const exportedMethods = {
 
         // Delete post from User database
         const userCollection = await users();
-        userCollection.updateOne(
+        await userCollection.updateOne(
             { _id: new ObjectId(deletionInfo.userId) }, 
             { $pull: { posts: postId } } 
         );
