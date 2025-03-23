@@ -2,7 +2,7 @@ import { users } from "../config/mongoCollections.js";
 import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
-import { postData } from "./index.js";
+import { postData, commentData } from "./index.js";
 
 const exportedMethods = {
     createUser: async (firstName, lastName, email, username, age, password) => {
@@ -110,7 +110,7 @@ const exportedMethods = {
         await postData.removePostsByUserId(userId);
 
         // TODO: Delete all comments that the user created
-
+        await commentData.removeCommentsByUserId(userId);
 
         // Delete user from user collections
         const userCollection = await users();

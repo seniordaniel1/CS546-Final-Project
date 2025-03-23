@@ -29,10 +29,15 @@ async function postTest() {
     const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
 
     const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
-    console.log("All Comments before post deletion:\n",await commentData.getAllComments());
+    const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
+    console.log("All users before user deletion:\n", await userData.getAllUsers());
+    console.log("All posts before user deletion:\n", await postData.getAllPosts());
+    console.log("All Comments before user deletion:\n",await commentData.getAllComments());
 
-    await testCase(postData.removePost, post1._id);
-    console.log("All Comments after post deletion:\n",await commentData.getAllComments());
+    await testCase(userData.removeUser, user2._id);
+    console.log("All users after user deletion:\n", await userData.getAllUsers());
+    console.log("All posts after user deletion:\n", await postData.getAllPosts());
+    console.log("All comments after user deletion:\n",await commentData.getAllComments());
 }
 
 async function commentTest() {
