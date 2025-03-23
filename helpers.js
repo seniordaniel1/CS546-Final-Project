@@ -295,7 +295,7 @@ export async function validateUsername(username, usernameStr) {
  * @param {String} id Potential movie ID 
  * @returns trimmed movie ID 
  */
-export async function validateUserIdAndReturnTrimmedId(id) {
+export async function validateIdAndReturnTrimmedId(id) {
     await checkNumArgs(arguments.length, 1);
     await checkInputsExistence(Array.from(arguments));
     await isStr(id, "validateUserId");

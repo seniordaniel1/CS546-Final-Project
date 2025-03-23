@@ -1,5 +1,5 @@
 import { users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateUserIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 import { postData } from "./index.js";
@@ -85,7 +85,7 @@ const exportedMethods = {
         await isStr(userId, "getUserById-userIdStr");
 
         // Check that user ID is in database
-        userId = await validateUserIdAndReturnTrimmedId(userId);
+        userId = await validateIdAndReturnTrimmedId(userId);
 
         // Get all users and find user by id 
         const userCollection = await users();
@@ -102,7 +102,7 @@ const exportedMethods = {
         await checkInputsExistence([userId])
         await checkNumArguments([userId], 1, "removeUserById");
         await isStr(userId, "removeUserById-userIdStr");
-        await validateUserIdAndReturnTrimmedId(userId);
+        await validateIdAndReturnTrimmedId(userId);
 
         const currMovie = await exportedMethods.getUserById(userId);
         
@@ -143,6 +143,8 @@ const exportedMethods = {
         const currArgs = [userId, postId];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addPostToUser");
+        userId = await validateIdAndReturnTrimmedId(userId);
+        postId = await validateIdAndReturnTrimmedId(postId);
         await isStr(userId, "addPostToUser-userId");
         await isStr(postId, "addPostToUser-postId")
 
@@ -151,6 +153,31 @@ const exportedMethods = {
         const updatedInfo = await userCollection.findOneAndUpdate(
             { _id: new ObjectId(userId) },
             { $push: { posts: postId } },
+            { returnDocument: 'after' }
+        )
+
+        // Validate that function was executed
+        if (!updatedInfo)
+            throw new Error('could not update movie successfully');
+        
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    },
+    addCommentToUser: async(userId, commentId) => {
+        // Authenticate inputs
+        const currArgs = [userId, commentId];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addCommentToUser");
+        userId = await validateIdAndReturnTrimmedId(userId);
+        commentId = await validateIdAndReturnTrimmedId(commentId);
+        await isStr(userId, "addCommentToUser-userId");
+        await isStr(commentId, "addCommentToUser-commentId")
+
+        // Add post to user
+        const userCollection = await users();
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userId) },
+            { $push: { comments: commentId } },
             { returnDocument: 'after' }
         )
 

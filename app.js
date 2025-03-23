@@ -1,7 +1,7 @@
 // TODO: Modify the collection name to users -- please refer to lab4
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 // TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
-import { userData, postData } from "./data/index.js";
+import { userData, postData, commentData } from "./data/index.js";
 import express from 'express';
 
 // TODO: Update Routes 
@@ -32,6 +32,17 @@ async function postTest() {
     console.log(await postData.getAllPosts());
 }
 
+async function commentTest() {
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
+    
+    const comment1 = await testCase(commentData.createComment, post1._id, user1._id, "I've joined the Avengers!");
+    console.log("Get Comment by ID: ", comment1);
+
+    console.log("Get all Users: ", await userData.getAllUsers());
+    console.log("Get all Posts: ", await postData.getAllPosts());
+}
+
 // Connect to the database and reset it before starting the server
 async function startServer() {
     try {
@@ -47,8 +58,9 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await postTest()
+        // await postTest()
         // await usersTest();
+        await commentTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

@@ -1,5 +1,5 @@
 import { posts, users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, validateUserIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr } from "../helpers.js";
 import { userData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
@@ -17,11 +17,11 @@ const exportedMethods = {
             isStr(imageUrl, "createPost-imageUrl");
         }
 
-        isStr(userId, "createPost-userId");
-        isStr(content, "createPost-content");
+        await isStr(userId, "createPost-userId");
+        await isStr(content, "createPost-content");
 
         // Trim All arguments:
-        userId = await validateUserIdAndReturnTrimmedId(userId);
+        userId = await validateIdAndReturnTrimmedId(userId);
         content = await trimArguments([content]);
         content = content[0];
         if (imageUrl) {
@@ -46,7 +46,7 @@ const exportedMethods = {
             dislikes: dislikes
         }
 
-        // Add post to database
+        // Add post to collection
         const postCollection = await posts();
         const insertInfo = await postCollection.insertOne(newPost);
         if (!insertInfo.acknowledged || !insertInfo.insertedId)
@@ -57,10 +57,10 @@ const exportedMethods = {
         const currPost = await exportedMethods.getPostById(newId);
 
         // Add postId to userId.posts array
-        const newData = await userData.addPostToUser(userId, insertInfo.insertedId.toString())
+        await userData.addPostToUser(userId, insertInfo.insertedId.toString())
 
         
-        return newData;
+        return currPost;
 
     },
     getAllPosts: async () => {
@@ -94,7 +94,7 @@ const exportedMethods = {
         await checkInputsExistence([postId])
         await checkNumArguments([postId], 1, "removePostrById");
         await isStr(postId, "removePostById-postIdStr");
-        postId = await validateUserIdAndReturnTrimmedId(postId);
+        postId = await validateIdAndReturnTrimmedId(postId);
 
         // Get post by Id
         const currPost = await exportedMethods.getPostById(postId);
@@ -126,7 +126,7 @@ const exportedMethods = {
         await isStr(postId, "getPostById-postIdStr");
 
         // Check that post ID is in database
-        postId = await validateUserIdAndReturnTrimmedId(postId);
+        postId = await validateIdAndReturnTrimmedId(postId);
 
         // Get all posts and find post by id 
         const postCollection = await posts();
@@ -150,6 +150,32 @@ const exportedMethods = {
         for (const post of posts) {
             await exportedMethods.removePost(post._id);
         }
+    },
+    addCommentToPost: async (postId, commentId) => {
+        // Authenticate inputs
+        const currArgs = [postId, commentId];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addCommentToPost");
+        postId = await validateIdAndReturnTrimmedId(postId);
+        await exportedMethods.getPostById(postId);
+        commentId = await validateIdAndReturnTrimmedId(commentId);
+        await isStr(postId, "addCommentToPost-postId");
+        await isStr(commentId, "addCommentToPost-commentId")
+
+        // Add post to user
+        const postCollection = await posts();
+        const updatedInfo = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $push: { comments: commentId } },
+            { returnDocument: 'after' }
+        )
+
+        // Validate that function was executed
+        if (!updatedInfo)
+            throw new Error('could not update movie successfully');
+        
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
     }
 }
 
