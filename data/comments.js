@@ -140,6 +140,7 @@ const exportedMethods = {
         await checkInputsExistence([userId])
         await checkNumArguments([userId], 1, "removeCommentsByUserId");
         await isStr(userId, "removeCommentsByUserId-userIdStr");
+        await userData.getUserById(userId);
 
         // Remove all comments made by a user 
         const comments = await exportedMethods.getCommentsByUserId(userId);

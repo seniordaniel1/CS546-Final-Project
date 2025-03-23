@@ -50,7 +50,7 @@ const exportedMethods = {
             email: email,
             username: username,
             age: age,
-            password: password,
+            password: hashedPassword,
             followers: followers,
             following: following,
             posts: posts,
@@ -170,8 +170,8 @@ const exportedMethods = {
         await checkNumArguments(currArgs, 2, "addCommentToUser");
         userId = await validateIdAndReturnTrimmedId(userId);
         commentId = await validateIdAndReturnTrimmedId(commentId);
-        await isStr(userId, "addCommentToUser-userId");
-        await isStr(commentId, "addCommentToUser-commentId")
+        await exportedMethods.getUserById(userId);
+        await commentData.getCommentById(commentId);
 
         // Add post to user
         const userCollection = await users();
@@ -188,11 +188,6 @@ const exportedMethods = {
         updatedInfo._id = updatedInfo._id.toString();
         return updatedInfo;
     },
-    /**
-     * 
-     * @param {String} userIdFollowing User that clicked to follow the other user
-     * @param {String} userIdFollower User that is now being followed 
-     */
     addFollower: async (userIdFollowing, userIdFollower) => {
         // Validate arguments
         const currArgs = [userIdFollowing, userIdFollower];
@@ -227,11 +222,6 @@ const exportedMethods = {
             userFollowed: addToFollowerList
         }
     },
-    /**
-     * 
-     * @param {String} userIdFollowing User that is following
-     * @param {String} userIdFollower User that is being followed 
-     */
     removeFollower: async (userIdFollowing, userIdFollower) => {
         // Validate arguments
         const currArgs = [userIdFollowing, userIdFollower];
