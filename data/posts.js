@@ -179,7 +179,103 @@ const exportedMethods = {
         
         updatedInfo._id = updatedInfo._id.toString();
         return updatedInfo;
-    }
+    },
+    addLike: async (postId, userID) => {
+        // Validate inputs 
+        const currArgs = [postId, userID];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addLike");
+        await isStr(postId, "addLike-postId");
+        await isStr(userID, "addLike-userID");
+        await exportedMethods.getPostById(postId);
+        await userData.getUserById(userID);
+
+        // Add userId to posts.likes array 
+        const postCollection = await posts();
+        const updatedInfo = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $push: { likes: userID } },
+            { returnDocument: 'after' }
+        )
+        if (!updatedInfo)
+            throw new Error("Could not add like to post")
+        
+        // Return object with ID as string 
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;        
+    },
+    addDislike: async (postId, userID) => {
+        // Validate inputs 
+        const currArgs = [postId, userID];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addDislike");
+        await isStr(postId, "addDislike-postId");
+        await isStr(userID, "addDislike-userID");
+        await exportedMethods.getPostById(postId);
+        await userData.getUserById(userID);
+
+        // Add userId to posts.likes array 
+        const postCollection = await posts();
+        const updatedInfo = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $push: { dislikes: userID } },
+            { returnDocument: 'after' }
+        )
+        if (!updatedInfo)
+            throw new Error("Could not add like to post")
+
+        // Return object with ID as string 
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo; 
+    },
+    removeLike: async (postId, userID) => {
+        // Validate Arguments
+        const currArgs = [postId, userID];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "removeLike");
+        await isStr(postId, "removeLike-postId");
+        await isStr(userID, "removeLike-userID");
+        await exportedMethods.getPostById(postId);
+        await userData.getUserById(userID);
+
+        // Remove userId from posts.likes 
+        const postCollection = await posts();
+        const updatedInfo = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $pull: { likes: userID } },
+            { returnDocument: 'after' }
+        )
+        if (!updatedInfo)
+            throw new Error("Could not add like to post")
+
+        // Return object with ID as string 
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;  
+    },
+    removeDislike: async (postId, userID) => {
+        // Validate Arguments
+        const currArgs = [postId, userID];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "removeDisike");
+        await isStr(postId, "removeDislike-postId");
+        await isStr(userID, "removeDislike-userID");
+        await exportedMethods.getPostById(postId);
+        await userData.getUserById(userID);
+
+        // Remove userId from posts.likes 
+        const postCollection = await posts();
+        const updatedInfo = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $pull: { dislikes: userID } },
+            { returnDocument: 'after' }
+        )
+        if (!updatedInfo)
+            throw new Error("Could not add like to post")
+
+        // Return object with ID as string 
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    },
 }
 
 export default exportedMethods;

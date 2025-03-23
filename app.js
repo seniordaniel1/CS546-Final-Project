@@ -95,6 +95,30 @@ async function followersTest(){
     console.log(await userData.getAllUsers())
 }
 
+async function likeTest() {
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
+    const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
+
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+    const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
+
+    await postData.addLike(post1._id, user1._id);
+    await postData.addDislike(post1._id, user2._id);
+
+    // Before removal
+    console.log("Before removal:")
+    console.log(await postData.getAllPosts());
+
+    // After removal
+    await postData.removeLike(post1._id, user1._id);
+    await postData.removeDislike(post1._id, user2._id);
+
+    console.log("Afte removal:")
+    console.log(await postData.getAllPosts());
+}
+
 // Connect to the database and reset it before starting the server
 async function startServer() {
     try {
@@ -110,7 +134,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await followersTest();
+        await likeTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
