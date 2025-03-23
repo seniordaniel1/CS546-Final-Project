@@ -63,7 +63,7 @@ async function deletePostTest(){
     console.log("All comments after user deletion:\n",await commentData.getAllComments());
 }
 
-async function commentTest() {
+async function deleteCommentTest() {
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
     
