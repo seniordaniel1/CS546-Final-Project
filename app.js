@@ -86,7 +86,13 @@ async function followersTest(){
 
     // Make it such that user1 follows user2 
     await testCase(userData.addFollower, user1._id, user2._id);
-    console.log(await userData.getAllUsers());
+
+    console.log("Before deleting follower:\n")
+    console.log(await userData.getAllUsers())
+
+    await testCase(userData.removeFollower, user1._id, user2._id);
+    console.log("After deleting follower:\n")
+    console.log(await userData.getAllUsers())
 }
 
 // Connect to the database and reset it before starting the server
