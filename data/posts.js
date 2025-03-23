@@ -20,6 +20,8 @@ const exportedMethods = {
         await isStr(userId, "createPost-userId");
         await isStr(content, "createPost-content");
 
+        await userData.getUserById(userId);
+
         // Trim All arguments:
         userId = await validateIdAndReturnTrimmedId(userId);
         content = await trimArguments([content]);
@@ -147,6 +149,7 @@ const exportedMethods = {
         await checkInputsExistence([userId])
         await checkNumArguments([userId], 1, "removePostsByUserId");
         await isStr(userId, "removePostsByUserId-userIdStr");
+        await userData.getUserById(userId);
 
         // Remove all posts made by a user 
         const posts = await exportedMethods.getPostsByUserId(userId);
@@ -160,10 +163,9 @@ const exportedMethods = {
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addCommentToPost");
         postId = await validateIdAndReturnTrimmedId(postId);
-        await exportedMethods.getPostById(postId);
         commentId = await validateIdAndReturnTrimmedId(commentId);
-        await isStr(postId, "addCommentToPost-postId");
-        await isStr(commentId, "addCommentToPost-commentId")
+        await exportedMethods.getPostById(postId);
+        await commentData.getCommentById(commentId);
 
         // Add post to user
         const postCollection = await posts();
@@ -185,8 +187,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addLike");
-        await isStr(postId, "addLike-postId");
-        await isStr(userID, "addLike-userID");
+        userID = validateIdAndReturnTrimmedId(userID);
+        postId = validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -209,8 +211,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addDislike");
-        await isStr(postId, "addDislike-postId");
-        await isStr(userID, "addDislike-userID");
+        userID = validateIdAndReturnTrimmedId(userID);
+        postId = validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -233,8 +235,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "removeLike");
-        await isStr(postId, "removeLike-postId");
-        await isStr(userID, "removeLike-userID");
+        userID = validateIdAndReturnTrimmedId(userID);
+        postId = validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -257,8 +259,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "removeDisike");
-        await isStr(postId, "removeDislike-postId");
-        await isStr(userID, "removeDislike-userID");
+        userID = validateIdAndReturnTrimmedId(userID);
+        postId = validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
