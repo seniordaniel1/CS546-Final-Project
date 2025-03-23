@@ -1,6 +1,6 @@
 import { posts, users } from "../config/mongoCollections.js";
 import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr } from "../helpers.js";
-import { userData } from "./index.js";
+import { userData, commentData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
 const exportedMethods = {
@@ -98,6 +98,9 @@ const exportedMethods = {
 
         // Get post by Id
         const currPost = await exportedMethods.getPostById(postId);
+
+        // TODO: Delete all comments connected to post 
+        await commentData.removeCommentsByPostId(currPost._id);
 
         // Delete post from post database
         const postCollection = await posts();

@@ -23,13 +23,16 @@ async function postTest() {
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
     const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
-    console.log("Before Deletion:\n", await userData.getAllUsers());
 
-    // Remove 1 user
-    await testCase(userData.removeUser, user1._id);
-    console.log("After Deletion:")
-    console.log(await userData.getAllUsers());
-    console.log(await postData.getAllPosts());
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+    const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
+
+    const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
+    console.log("All Comments before post deletion:\n",await commentData.getAllComments());
+
+    await testCase(postData.removePost, post1._id);
+    console.log("All Comments after post deletion:\n",await commentData.getAllComments());
 }
 
 async function commentTest() {
@@ -63,9 +66,9 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        // await postTest()
+        await postTest()
         // await usersTest();
-        await commentTest();
+        // await commentTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
