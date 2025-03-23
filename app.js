@@ -79,6 +79,16 @@ async function deleteCommentTest() {
     console.log("Get all Posts: ", await postData.getAllPosts());
 }
 
+async function followersTest(){
+    // Create 2 users 
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+
+    // Make it such that user1 follows user2 
+    await testCase(userData.addFollower, user1._id, user2._id);
+    console.log(await userData.getAllUsers());
+}
+
 // Connect to the database and reset it before starting the server
 async function startServer() {
     try {
@@ -94,7 +104,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await deletePostTest()
+        await followersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

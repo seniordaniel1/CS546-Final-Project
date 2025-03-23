@@ -215,7 +215,7 @@ const exportedMethods = {
         // TODO: Add to follower list
         const addToFollowerList = await userCollection.findOneAndUpdate(
             { _id: new ObjectId(userIdFollower) },
-            { $push: { follower: userIdFollowing } },
+            { $push: { followers: userIdFollowing } },
             { returnDocument: 'after' }
         )
 
@@ -251,7 +251,7 @@ const exportedMethods = {
         // Remove followingId from follower list
         await userCollection.updateOne(
             { _id: new ObjectId(userIdFollower) },
-            { $pull: { follower: userIdFollowing } } 
+            { $pull: { followers: userIdFollowing } } 
         )
     }
 }
