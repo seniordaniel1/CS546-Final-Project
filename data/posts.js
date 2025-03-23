@@ -99,7 +99,7 @@ const exportedMethods = {
         // Get post by Id
         const currPost = await exportedMethods.getPostById(postId);
 
-        // TODO: Delete all comments connected to post 
+        // Delete all comments connected to post 
         await commentData.removeCommentsByPostId(currPost._id);
 
         // Delete post from post database

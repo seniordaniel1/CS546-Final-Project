@@ -44,9 +44,9 @@ const exportedMethods = {
         const commentId = insertInfo.insertedId.toString();
         const currComment = exportedMethods.getCommentById(commentId);
 
-        // TODO: Add commentId to user.comments array
+        // Add commentId to user.comments array
         await userData.addCommentToUser(userId, commentId);
-        // TODO: Add commentId to post.comments array
+        // Add commentId to post.comments array
         await postData.addCommentToPost(postId, commentId);
         
         return currComment;
@@ -103,14 +103,14 @@ const exportedMethods = {
             throw new Error(`Could not delete movie with id of ${postId}`);
         }
 
-        // TODO: Delete comment from User database
+        // Delete comment from User database
         const userCollection = await users();
         await userCollection.updateOne(
             { _id: new ObjectId(deletionInfo.userId) }, 
             { $pull: { comments: commentId } } 
         );
 
-        // TODO: Delete comment from Post database
+        // Delete comment from Post database
         const postCollection = await posts();
         await postCollection.updateOne(
             { _id: new ObjectId(deletionInfo.postId) }, 
