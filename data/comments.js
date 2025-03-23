@@ -119,11 +119,64 @@ const exportedMethods = {
 
         return { ...currPost, deleted: true };
     },
-    removeCommentsByUserId: async (userId) => {
+    getCommentsByUserId: async (userId) => {
+        // Validate arguments
+        await checkInputsExistence([userId])
+        await checkNumArguments([userId], 1, "getCommentsByUserId");
+        await isStr(userId, "getCommentsByUserId-userIdStr");
 
+        // Get posts by user id 
+        const currUser = await userData.getUserById(userId);
+        const currUserComments = currUser.comments;
+        const ans = []
+        for (let i = 0; i < currUserComments.length; i++) {
+            const currComment = currUserComments[i];
+            ans.push(await exportedMethods.getCommentById(currComment));
+        }
+        return ans;
+    },
+    removeCommentsByUserId: async (userId) => {
+        // Validate arguments
+        await checkInputsExistence([userId])
+        await checkNumArguments([userId], 1, "removeCommentsByUserId");
+        await isStr(userId, "removeCommentsByUserId-userIdStr");
+
+        // Remove all comments made by a user 
+        const comments = await exportedMethods.getCommentsByUserId(userId);
+        for (const comment of comments) {
+            await exportedMethods.removeComment(comment._id);
+        }
+    },
+    getCommentsByPostId: async (postId) => {
+        // Validate inputs 
+        await checkInputsExistence([postId])
+        await checkNumArguments([postId], 1, "getCommentsByPostId");
+        await isStr(postId, "getCommentsByPostId-postIdStr");
+        postId = await validateIdAndReturnTrimmedId(postId);
+
+        // Get posts by user id 
+        const currPost = await postData.getPostById(postId);
+        const currPostComments = currPost.comments;
+        const ans = []
+        for (let i = 0; i < currPostComments.length; i++) {
+            const currComment = currPostComments[i];
+            ans.push(await exportedMethods.getCommentById(currComment));
+        }
+        return ans;
     },
     removeCommentsByPostId: async (postId) => {
+        // Validate arguments
+        await checkInputsExistence([postId])
+        await checkNumArguments([postId], 1, "removeCommentsByPostId");
+        await isStr(postId, "removeCommentsByPostId-postIdStr");
+        postId = await validateIdAndReturnTrimmedId(postId);
+        await postData.getPostById(postId);
 
+        // Remove all comments made by a user 
+        const comments = await exportedMethods.getCommentsByPostId(postId);
+        for (const comment of comments) {
+            await exportedMethods.removeComment(comment._id);
+        }
     }
 }
 
