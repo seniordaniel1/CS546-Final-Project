@@ -109,7 +109,7 @@ const exportedMethods = {
         // Delete all posts that the user created
         await postData.removePostsByUserId(userId);
 
-        // TODO: Delete all comments that the user created
+        // Delete all comments that the user created
         await commentData.removeCommentsByUserId(userId);
 
         // Delete user from user collections
