@@ -226,6 +226,33 @@ const exportedMethods = {
             userFollowing: addToFollowingList,
             userFollowed: addToFollowerList
         }
+    },
+    /**
+     * 
+     * @param {String} userIdFollowing User that is following
+     * @param {String} userIdFollower User that is being followed 
+     */
+    removeFollower: async (userIdFollowing, userIdFollower) => {
+        // Validate arguments
+        const currArgs = [userIdFollowing, userIdFollower];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addFollower");
+        userIdFollowing = await validateIdAndReturnTrimmedId(userIdFollowing);
+        userIdFollower = await validateIdAndReturnTrimmedId(userIdFollower);
+        await exportedMethods.getUserById(userIdFollowing);
+        await exportedMethods.getUserById(userIdFollower);
+
+        // Remove FollowerId from following list 
+        const userCollection = await users();
+        await userCollection.updateOne(
+            { _id: new ObjectId(userIdFollowing) },
+            { $pull: { following: userIdFollower } } 
+        )
+        // Remove followingId from follower list
+        await userCollection.updateOne(
+            { _id: new ObjectId(userIdFollower) },
+            { $pull: { follower: userIdFollowing } } 
+        )
     }
 }
 
