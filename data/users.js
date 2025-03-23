@@ -145,8 +145,8 @@ const exportedMethods = {
         await checkNumArguments(currArgs, 2, "addPostToUser");
         userId = await validateIdAndReturnTrimmedId(userId);
         postId = await validateIdAndReturnTrimmedId(postId);
-        await isStr(userId, "addPostToUser-userId");
-        await isStr(postId, "addPostToUser-postId")
+        await postData.getPostById(postId);
+        await exportedMethods.getUserById(userId);
 
         // Add post to user
         const userCollection = await users();
@@ -187,6 +187,45 @@ const exportedMethods = {
         
         updatedInfo._id = updatedInfo._id.toString();
         return updatedInfo;
+    },
+    /**
+     * 
+     * @param {String} userIdFollowing User that clicked to follow the other user
+     * @param {String} userIdFollower User that is now being followed 
+     */
+    addFollower: async (userIdFollowing, userIdFollower) => {
+        // Validate arguments
+        const currArgs = [userIdFollowing, userIdFollower];
+        await checkInputsExistence(currArgs);
+        await checkNumArguments(currArgs, 2, "addFollower");
+        userIdFollowing = await validateIdAndReturnTrimmedId(userIdFollowing);
+        userIdFollower = await validateIdAndReturnTrimmedId(userIdFollower);
+        await exportedMethods.getUserById(userIdFollowing);
+        await exportedMethods.getUserById(userIdFollower);
+
+        const userCollection = await users();
+        
+        // TODO: Add to following list 
+        const addToFollowingList = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userIdFollowing) },
+            { $push: { following: userIdFollower } },
+            { returnDocument: 'after' }
+        )
+        
+        // TODO: Add to follower list
+        const addToFollowerList = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userIdFollower) },
+            { $push: { follower: userIdFollowing } },
+            { returnDocument: 'after' }
+        )
+
+        if (!addToFollowerList || !addToFollowingList)
+            throw new Error("Could not add follower")
+        
+        return {
+            userFollowing: addToFollowingList,
+            userFollowed: addToFollowerList
+        }
     }
 }
 
