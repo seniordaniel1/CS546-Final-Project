@@ -63,7 +63,7 @@ async function deletePostTest(){
     console.log("All comments after user deletion:\n",await commentData.getAllComments());
 }
 
-async function commentTest() {
+async function deleteCommentTest() {
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
     
@@ -77,6 +77,22 @@ async function commentTest() {
     console.log("After deleting comment")
     console.log("Get all Users: ", await userData.getAllUsers());
     console.log("Get all Posts: ", await postData.getAllPosts());
+}
+
+async function followersTest(){
+    // Create 2 users 
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+
+    // Make it such that user1 follows user2 
+    await testCase(userData.addFollower, user1._id, user2._id);
+
+    console.log("Before deleting follower:\n")
+    console.log(await userData.getAllUsers())
+
+    await testCase(userData.removeFollower, user1._id, user2._id);
+    console.log("After deleting follower:\n")
+    console.log(await userData.getAllUsers())
 }
 
 // Connect to the database and reset it before starting the server
@@ -94,7 +110,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await deletePostTest()
+        await followersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
