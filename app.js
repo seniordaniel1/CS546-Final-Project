@@ -38,7 +38,12 @@ async function commentTest() {
     
     const comment1 = await testCase(commentData.createComment, post1._id, user1._id, "I've joined the Avengers!");
     console.log("Get Comment by ID: ", comment1);
+    console.log("Before deleting comment")
+    console.log("Get all Users: ", await userData.getAllUsers());
+    console.log("Get all Posts: ", await postData.getAllPosts());
 
+    await testCase(commentData.removeComment, comment1._id);
+    console.log("After deleting comment")
     console.log("Get all Users: ", await userData.getAllUsers());
     console.log("Get all Posts: ", await postData.getAllPosts());
 }

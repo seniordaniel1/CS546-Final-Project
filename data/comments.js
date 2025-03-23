@@ -1,4 +1,4 @@
-import { comments } from "../config/mongoCollections.js";
+import { comments, users, posts } from "../config/mongoCollections.js";
 import { checkInputsExistence, checkNumArguments, isStr, trimArguments, validateIdAndReturnTrimmedId, getTodayDate } from "../helpers.js";
 import { userData, postData } from "./index.js";
 import { ObjectId } from 'mongodb';
@@ -82,9 +82,49 @@ const exportedMethods = {
         comment._id = comment._id.toString();
         return comment;
     },
-    // TODO: Populate function to remove comment by Id
     removeComment: async (commentId) => {
+        // Validate inputs 
+        await checkInputsExistence([commentId])
+        await checkNumArguments([commentId], 1, "removeCommentById");
+        await isStr(commentId, "removeCommentById-commentIdStr");
+        commentId = await validateIdAndReturnTrimmedId(commentId);
+
+        // Get comment by Id
+        const currPost = await exportedMethods.getCommentById(commentId);
+
+        // Delete post from post database
+        const commentCollection = await comments();
+        const deletionInfo = await commentCollection.findOneAndDelete({
+            _id: new ObjectId(currPost._id)
+        });
+        
+        // Validate that deletion was successful
+        if (!deletionInfo) {
+            throw new Error(`Could not delete movie with id of ${postId}`);
+        }
+
+        // TODO: Delete comment from User database
+        const userCollection = await users();
+        userCollection.updateOne(
+            { _id: new ObjectId(deletionInfo.userId) }, 
+            { $pull: { comments: commentId } } 
+        );
+
+        // TODO: Delete comment from Post database
+        const postCollection = await posts();
+        postCollection.updateOne(
+            { _id: new ObjectId(deletionInfo.postId) }, 
+            { $pull: { comments: commentId } } 
+        )
+
+        return { ...currPost, deleted: true };
     },
+    removeCommentsByUserId: async (userId) => {
+
+    },
+    removeCommentsByPostId: async (postId) => {
+
+    }
 }
 
 export default exportedMethods;
