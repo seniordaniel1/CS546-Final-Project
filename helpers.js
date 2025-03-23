@@ -82,14 +82,14 @@ async function isNum(num, num_name) {
 export async function checkNumArguments(...args) {
     const function_arguments = args;
 
-    // TODO: Check if all inputs all exist
+    // Check if all inputs all exist
     checkInputsExistence(function_arguments);
 
-    // TODO: Check if function was called with the correct number of arguments
+    // Check if function was called with the correct number of arguments
     if (function_arguments.length !== 3)
         throw new Error(`Invalid number of arguments`);
 
-    // TODO: Validate each input are of the correct type
+    // Validate each input are of the correct type
     const currArgs = function_arguments[0];
     const intendedNumArgs = function_arguments[1];
     const functionName = function_arguments[2];
@@ -97,7 +97,7 @@ export async function checkNumArguments(...args) {
     isArray(currArgs, `checkNumArguments call from function: ${functionName}`)
     isNum(intendedNumArgs, `checkNumArguments call from function: ${functionName}`)
 
-    // TODO: Validate that number of arguments is valid 
+    // Validate that number of arguments is valid 
     if (currArgs.length !== intendedNumArgs)
         throw new Error(`Invalid number of arguments from function: ${functionName}`);
 }
@@ -295,7 +295,7 @@ export async function validateUsername(username, usernameStr) {
  * @param {String} id Potential movie ID 
  * @returns trimmed movie ID 
  */
-export async function validateUserIdAndReturnTrimmedId(id) {
+export async function validateIdAndReturnTrimmedId(id) {
     await checkNumArgs(arguments.length, 1);
     await checkInputsExistence(Array.from(arguments));
     await isStr(id, "validateUserId");

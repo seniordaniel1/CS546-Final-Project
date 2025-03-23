@@ -1,7 +1,7 @@
 // TODO: Modify the collection name to users -- please refer to lab4
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 // TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
-import { userData, postData } from "./data/index.js";
+import { userData, postData, commentData } from "./data/index.js";
 import express from 'express';
 
 // TODO: Update Routes 
@@ -18,18 +18,65 @@ async function usersTest() {
     const getAllUsers = await userData.getAllUsers()
 }
 
-async function postTest() {
+async function deleteUserTest() {
     // Create a post by an existing user
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
     const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
-    console.log("Before Deletion:\n", await userData.getAllUsers());
 
-    // Remove 1 user
-    await testCase(userData.removeUser, user1._id);
-    console.log("After Deletion:")
-    console.log(await userData.getAllUsers());
-    console.log(await postData.getAllPosts());
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+    const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
+
+    const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
+    const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
+    console.log("All users before user deletion:\n", await userData.getAllUsers());
+    console.log("All posts before user deletion:\n", await postData.getAllPosts());
+    console.log("All Comments before user deletion:\n",await commentData.getAllComments());
+
+    await testCase(userData.removeUser, user2._id);
+    console.log("All users after user deletion:\n", await userData.getAllUsers());
+    console.log("All posts after user deletion:\n", await postData.getAllPosts());
+    console.log("All comments after user deletion:\n",await commentData.getAllComments());
+}
+
+async function deletePostTest(){
+    // Create a post by an existing user
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
+    const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!")
+
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
+    const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
+
+    const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
+    const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
+    
+    console.log("All users before user deletion:\n", await userData.getAllUsers());
+    console.log("All posts before user deletion:\n", await postData.getAllPosts());
+    console.log("All Comments before user deletion:\n",await commentData.getAllComments());
+
+    await testCase(postData.removePost, post1._id);
+    console.log("All users after user deletion:\n", await userData.getAllUsers());
+    console.log("All posts after user deletion:\n", await postData.getAllPosts());
+    console.log("All comments after user deletion:\n",await commentData.getAllComments());
+}
+
+async function commentTest() {
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
+    
+    const comment1 = await testCase(commentData.createComment, post1._id, user1._id, "I've joined the Avengers!");
+    console.log("Get Comment by ID: ", comment1);
+    console.log("Before deleting comment")
+    console.log("Get all Users: ", await userData.getAllUsers());
+    console.log("Get all Posts: ", await postData.getAllPosts());
+
+    await testCase(commentData.removeComment, comment1._id);
+    console.log("After deleting comment")
+    console.log("Get all Users: ", await userData.getAllUsers());
+    console.log("Get all Posts: ", await postData.getAllPosts());
 }
 
 // Connect to the database and reset it before starting the server
@@ -47,8 +94,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await postTest()
-        // await usersTest();
+        await deletePostTest()
 
     } catch (error) {
         console.error('Error starting the server:', error);
