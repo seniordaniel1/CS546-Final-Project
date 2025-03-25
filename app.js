@@ -107,16 +107,16 @@ async function likeTest() {
     await postData.addLike(post1._id, user1._id);
     await postData.addDislike(post1._id, user2._id);
 
-    // Before removal
-    console.log("Before removal:")
-    console.log(await postData.getAllPosts());
+    // // Before removal
+    // console.log("Before removal:")
+    // console.log(await postData.getAllPosts());
 
     // After removal
-    await postData.removeLike(post1._id, user1._id);
-    await postData.removeDislike(post1._id, user2._id);
+    // await postData.removeLike(post1._id, user1._id);
+    // await postData.removeDislike(post1._id, user2._id);
 
-    console.log("Afte removal:")
-    console.log(await postData.getAllPosts());
+    // console.log("Afte removal:")
+    // console.log(await postData.getAllPosts());
 }
 
 // Connect to the database and reset it before starting the server

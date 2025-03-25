@@ -187,8 +187,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addLike");
-        userID = validateIdAndReturnTrimmedId(userID);
-        postId = validateIdAndReturnTrimmedId(postId);
+        userID = await validateIdAndReturnTrimmedId(userID);
+        postId = await validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -211,8 +211,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "addDislike");
-        userID = validateIdAndReturnTrimmedId(userID);
-        postId = validateIdAndReturnTrimmedId(postId);
+        userID = await validateIdAndReturnTrimmedId(userID);
+        postId = await validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -235,8 +235,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "removeLike");
-        userID = validateIdAndReturnTrimmedId(userID);
-        postId = validateIdAndReturnTrimmedId(postId);
+        userID = await validateIdAndReturnTrimmedId(userID);
+        postId = await validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
@@ -259,8 +259,8 @@ const exportedMethods = {
         const currArgs = [postId, userID];
         await checkInputsExistence(currArgs);
         await checkNumArguments(currArgs, 2, "removeDisike");
-        userID = validateIdAndReturnTrimmedId(userID);
-        postId = validateIdAndReturnTrimmedId(postId);
+        userID = await validateIdAndReturnTrimmedId(userID);
+        postId = await validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
