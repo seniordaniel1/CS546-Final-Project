@@ -119,7 +119,7 @@ const exportedMethods = {
         
         // Validate that deletion was successful
         if (!deletionInfo) {
-            throw new Error(`Could not delete movie with id of ${postId}`);
+            throw new Error(`Could not delete post with id of ${postId}`);
         }
 
         // Delete post from User database
