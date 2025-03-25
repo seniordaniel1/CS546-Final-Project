@@ -22,8 +22,20 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    // Not implemented
-    res.status(501).send();
+    try {
+        // upd = userPostData
+        const upd = req.body;
+
+        // Validate input data -- Must do it here as it will throw an error otherwise
+        if (!upd.firstName || !upd.lastName || !upd.email || !upd.age || !upd.password) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        const newUser = await userData.createUser(upd.firstName, upd.lastName, upd.email, upd.email, upd.age, upd.password);
+        return res.json(newUser);
+    } catch (error) {
+        return res.status(400).json({ error: `User cannot be created: ${error}` });
+    }
 });
 
 export default router
