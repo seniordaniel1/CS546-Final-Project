@@ -60,4 +60,62 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+// * Add a follower 
+router.post("/follow", async (req, res) => {
+    try {
+        // upd = userPostData
+        const upd = req.body;
+        const follower = upd.follower
+        const following = upd.following;
+
+        // Validate input data -- Must do it here or it will throw an error otherwise
+        if (!follower || !following) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        // Validate that the user exists 
+        await userData.getUserById(follower); 
+        await userData.getUserById(following);
+
+        // Add to the respective follower and following list
+        const result = await userData.addFollower(upd.following, upd.follower);
+        return res.json(result);
+    } catch (error) {
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        return res.status(400).json({ Error: `${error.message}` });
+    }
+})
+
+// * Remove a follower
+router.delete("/follow", async (req, res) => {
+    try {
+        // upd = userPostData
+        const upd = req.body;
+        const follower = upd.follower
+        const following = upd.following;
+
+        // Validate input data -- Must do it here or it will throw an error otherwise
+        if (!follower || !following) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        // Validate that the user exists 
+        await userData.getUserById(follower);
+        await userData.getUserById(following);
+
+        // Add to the respective follower and following list
+        const result = await userData.removeFollower(upd.following, upd.follower);
+        return res.json({...result, removedFollower: true});
+    } catch (error) {
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        return res.status(400).json({ Error: `${error.message}` });
+    }
+})
+
 export default router
