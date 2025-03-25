@@ -59,9 +59,16 @@ const exportedMethods = {
         const currPost = await exportedMethods.getPostById(newId);
 
         // Add postId to userId.posts array
-        await userData.addPostToUser(userId, insertInfo.insertedId.toString())
+        const userCollection = await users();
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userId) },
+            { $push: { posts: newId } },
+            { returnDocument: 'after' }
+        )
+        // Validate that function was executed
+        if (!updatedInfo)
+            throw new Error('could not update movie successfully');
 
-        
         return currPost;
 
     },
@@ -156,31 +163,6 @@ const exportedMethods = {
         for (const post of posts) {
             await exportedMethods.removePost(post._id);
         }
-    },
-    addCommentToPost: async (postId, commentId) => {
-        // Authenticate inputs
-        const currArgs = [postId, commentId];
-        await checkInputsExistence(currArgs);
-        await checkNumArguments(currArgs, 2, "addCommentToPost");
-        postId = await validateIdAndReturnTrimmedId(postId);
-        commentId = await validateIdAndReturnTrimmedId(commentId);
-        await exportedMethods.getPostById(postId);
-        await commentData.getCommentById(commentId);
-
-        // Add post to user
-        const postCollection = await posts();
-        const updatedInfo = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $push: { comments: commentId } },
-            { returnDocument: 'after' }
-        )
-
-        // Validate that function was executed
-        if (!updatedInfo)
-            throw new Error('could not update movie successfully');
-        
-        updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;
     },
     addLike: async (postId, userID) => {
         // Validate inputs 
