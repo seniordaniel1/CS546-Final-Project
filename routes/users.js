@@ -1,6 +1,6 @@
+import { userData } from '../data/index.js';
 import express from 'express';
 const router = express.Router();
-import { userData } from '../data/index.js';
 
 router.get("/:id", async (req, res) => {
     try {
@@ -37,5 +37,17 @@ router.post("/", async (req, res) => {
         return res.status(400).json({ error: `User cannot be created: ${error}` });
     }
 });
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const user = await userData.getUserById(req.params.id);
+        const userId = user._id;
+        await userData.getUserById(userId);
+        const currMovie = await userData.removeUser(userId);
+        return res.json(currMovie)
+    } catch (error) {
+        res.status(400).json({ Error: `${error}` });
+    }
+})
 
 export default router
