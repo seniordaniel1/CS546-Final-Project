@@ -2,6 +2,7 @@ import { userData } from '../data/index.js';
 import express from 'express';
 const router = express.Router();
 
+// * Function to get user by ID
 router.get("/:id", async (req, res) => {
     try {
         const user = await userData.getUserById(req.params.id);
@@ -11,16 +12,18 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// * Get all users
 router.get("/", async (req, res) => {
     try {
         const userList = await userData.getAllUsers();
         return res.json(userList);
     } catch (e) {
         // Something went wrong with the server!
-        return res.status(500).send();
+        return res.status(400).send();
     }
 });
 
+// * Create a new user 
 router.post("/", async (req, res) => {
     try {
         // upd = userPostData
@@ -38,16 +41,23 @@ router.post("/", async (req, res) => {
     }
 });
 
+// * Delete an existing user 
 router.delete("/:id", async (req, res) => {
     try {
-        const user = await userData.getUserById(req.params.id);
-        const userId = user._id;
-        await userData.getUserById(userId);
-        const currMovie = await userData.removeUser(userId);
-        return res.json(currMovie)
+        // Make sure that user exists
+        await userData.getUserById(req.params.id);
+        
+        // Get user Id  
+        const userId = req.params.id;  
+        const user = await userData.removeUser(userId);
+        return res.json({...user, deleted: true });
     } catch (error) {
-        res.status(400).json({ Error: `${error}` });
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" }); 
+        }
+        return res.status(400).json({ Error: `${error.message}` });
     }
-})
+});
 
 export default router
