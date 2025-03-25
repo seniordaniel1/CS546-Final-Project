@@ -138,56 +138,6 @@ const exportedMethods = {
         const hashedPassword = bcrypt.hashSync(password, salt);
         return hashedPassword;
     },
-    addPostToUser: async (userId, postId) => {
-        // Authenticate inputs
-        const currArgs = [userId, postId];
-        await checkInputsExistence(currArgs);
-        await checkNumArguments(currArgs, 2, "addPostToUser");
-        userId = await validateIdAndReturnTrimmedId(userId);
-        postId = await validateIdAndReturnTrimmedId(postId);
-        await postData.getPostById(postId);
-        await exportedMethods.getUserById(userId);
-
-        // Add post to user
-        const userCollection = await users();
-        const updatedInfo = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userId) },
-            { $push: { posts: postId } },
-            { returnDocument: 'after' }
-        )
-
-        // Validate that function was executed
-        if (!updatedInfo)
-            throw new Error('could not update movie successfully');
-        
-        updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;
-    },
-    addCommentToUser: async(userId, commentId) => {
-        // Authenticate inputs
-        const currArgs = [userId, commentId];
-        await checkInputsExistence(currArgs);
-        await checkNumArguments(currArgs, 2, "addCommentToUser");
-        userId = await validateIdAndReturnTrimmedId(userId);
-        commentId = await validateIdAndReturnTrimmedId(commentId);
-        await exportedMethods.getUserById(userId);
-        await commentData.getCommentById(commentId);
-
-        // Add post to user
-        const userCollection = await users();
-        const updatedInfo = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userId) },
-            { $push: { comments: commentId } },
-            { returnDocument: 'after' }
-        )
-
-        // Validate that function was executed
-        if (!updatedInfo)
-            throw new Error('could not update movie successfully');
-        
-        updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;
-    },
     addFollower: async (userIdFollowing, userIdFollower) => {
         // Validate arguments
         const currArgs = [userIdFollowing, userIdFollower];

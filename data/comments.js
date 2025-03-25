@@ -44,13 +44,30 @@ const exportedMethods = {
         const commentId = insertInfo.insertedId.toString();
         const currComment = exportedMethods.getCommentById(commentId);
 
-        // Add commentId to user.comments array
-        await userData.addCommentToUser(userId, commentId);
-        // Add commentId to post.comments array
-        await postData.addCommentToPost(postId, commentId);
+        // // Add commentId to user.comments array
+        // await userData.addCommentToUser(userId, commentId);
         
-        return currComment;
+        // Add post to user
+        const userCollection = await users();
+        const updatedInfo1 = await userCollection.findOneAndUpdate(
+            { _id: new ObjectId(userId) },
+            { $push: { comments: commentId } },
+            { returnDocument: 'after' }
+        )
 
+        // Add post to user
+        const postCollection = await posts();
+        const updatedInfo2 = await postCollection.findOneAndUpdate(
+            { _id: new ObjectId(postId) },
+            { $push: { comments: commentId } },
+            { returnDocument: 'after' }
+        )
+        
+        // Validate that function was executed
+        if (!updatedInfo1 || !updatedInfo2)
+            throw new Error('could not update movie successfully');
+
+        return currComment;
     },
     getAllComments: async () => {
         const commentCollection = await comments();
@@ -105,17 +122,19 @@ const exportedMethods = {
 
         // Delete comment from User database
         const userCollection = await users();
-        await userCollection.updateOne(
+        const updateUser = await userCollection.updateOne(
             { _id: new ObjectId(deletionInfo.userId) }, 
             { $pull: { comments: commentId } } 
         );
 
         // Delete comment from Post database
         const postCollection = await posts();
-        await postCollection.updateOne(
+        const updatePost = await postCollection.updateOne(
             { _id: new ObjectId(deletionInfo.postId) }, 
             { $pull: { comments: commentId } } 
         )
+        if(!updateUser || !updatePost)
+            throw new Error("Update did not work!");
 
         return { ...currPost, deleted: true };
     },
