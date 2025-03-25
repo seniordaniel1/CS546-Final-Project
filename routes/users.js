@@ -2,7 +2,7 @@ import { userData } from '../data/index.js';
 import express from 'express';
 const router = express.Router();
 
-// * Function to get user by ID
+// * Get user by ID
 router.get("/:id", async (req, res) => {
     try {
         const user = await userData.getUserById(req.params.id);
