@@ -150,10 +150,10 @@ const exportedMethods = {
 
         const userCollection = await users();
         
-        // TODO: Add to following list 
+        // Add to following list 
         const addToFollowingList = await updateUniqueElementInList(userCollection, userIdFollowing, 'add', 'following', userIdFollower, "addFollower");
         
-        // TODO: Add to follower list
+        // Add to follower list
         const addToFollowerList = await updateUniqueElementInList(userCollection, userIdFollower, 'add', 'followers', userIdFollowing, "addFollower");
 
         if (!addToFollowingList || !addToFollowerList)
@@ -176,15 +176,17 @@ const exportedMethods = {
 
         // Remove FollowerId from following list 
         const userCollection = await users();
-        await userCollection.updateOne(
-            { _id: new ObjectId(userIdFollowing) },
-            { $pull: { following: userIdFollower } } 
-        )
+        // await userCollection.updateOne(
+        //     { _id: new ObjectId(userIdFollowing) },
+        //     { $pull: { following: userIdFollower } } 
+        // )
+        await updateUniqueElementInList(userCollection, userIdFollowing, 'remove', 'following', userIdFollower, 'removeFollower');
         // Remove followingId from follower list
-        await userCollection.updateOne(
-            { _id: new ObjectId(userIdFollower) },
-            { $pull: { followers: userIdFollowing } } 
-        )
+        // await userCollection.updateOne(
+        //     { _id: new ObjectId(userIdFollower) },
+        //     { $pull: { followers: userIdFollowing } } 
+        // )
+        await updateUniqueElementInList(userCollection, userIdFollower, 'remove', 'followers', userIdFollowing, 'removeFollower');
     }
 }
 

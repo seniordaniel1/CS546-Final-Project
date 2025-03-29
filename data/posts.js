@@ -211,11 +211,7 @@ const exportedMethods = {
 
         // Remove userId from posts.likes 
         const postCollection = await posts();
-        const updatedInfo = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $pull: { likes: userID } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'remove', 'likes', userID, 'removeLike');
         if (!updatedInfo)
             throw new Error("Could not add like to post")
 
@@ -235,11 +231,7 @@ const exportedMethods = {
 
         // Remove userId from posts.likes 
         const postCollection = await posts();
-        const updatedInfo = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $pull: { dislikes: userID } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'remove', 'dislikes', userID, 'removeDislike')
         if (!updatedInfo)
             throw new Error("Could not add like to post")
 
