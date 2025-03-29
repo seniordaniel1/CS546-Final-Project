@@ -1,5 +1,5 @@
-import { users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds, updateUniqueElementInList } from "../helpers.js";
+import { users, posts } from "../config/mongoCollections.js";
+import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds, updateUniqueElementInList, removeElementFromAllDocuments } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 import { postData, commentData } from "./index.js";
@@ -112,6 +112,12 @@ const exportedMethods = {
         // Delete all comments that the user created
         await commentData.removeCommentsByUserId(userId);
 
+        // TODO: Delete all likes that user has made 
+        const postCollection = await posts();
+        removeElementFromAllDocuments(postCollection, 'likes', userId, 'removeUser-removeLikes');
+           // TODO: Delete all dislikes that user has made 
+        removeElementFromAllDocuments(postCollection, 'dislikes', userId, 'removeUser-removeDislikes');
+
         // Delete user from user collections
         const userCollection = await users();
         const deletionInfo = await userCollection.findOneAndDelete({
@@ -176,16 +182,7 @@ const exportedMethods = {
 
         // Remove FollowerId from following list 
         const userCollection = await users();
-        // await userCollection.updateOne(
-        //     { _id: new ObjectId(userIdFollowing) },
-        //     { $pull: { following: userIdFollower } } 
-        // )
         await updateUniqueElementInList(userCollection, userIdFollowing, 'remove', 'following', userIdFollower, 'removeFollower');
-        // Remove followingId from follower list
-        // await userCollection.updateOne(
-        //     { _id: new ObjectId(userIdFollower) },
-        //     { $pull: { followers: userIdFollowing } } 
-        // )
         await updateUniqueElementInList(userCollection, userIdFollower, 'remove', 'followers', userIdFollowing, 'removeFollower');
     }
 }
