@@ -28,6 +28,8 @@ async function deleteUserTest() {
     const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
     const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
 
+    postData.addLike(post2._id, user2._id);
+
     const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
     const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
     console.log("All users before user deletion:\n", await userData.getAllUsers());
@@ -107,9 +109,9 @@ async function likeTest() {
     await postData.addLike(post1._id, user1._id);
     await postData.addDislike(post1._id, user2._id);
 
-    // // Before removal
-    // console.log("Before removal:")
-    // console.log(await postData.getAllPosts());
+    // Before removal
+    console.log("Before removal:")
+    console.log(await postData.getAllPosts());
 
     // After removal
     // await postData.removeLike(post1._id, user1._id);
@@ -134,7 +136,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await likeTest()
+        await deleteUserTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

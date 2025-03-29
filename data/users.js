@@ -1,5 +1,5 @@
 import { users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds, updateUniqueElementInList } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 import { postData, commentData } from "./index.js";
@@ -151,20 +151,12 @@ const exportedMethods = {
         const userCollection = await users();
         
         // TODO: Add to following list 
-        const addToFollowingList = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userIdFollowing) },
-            { $push: { following: userIdFollower } },
-            { returnDocument: 'after' }
-        )
+        const addToFollowingList = await updateUniqueElementInList(userCollection, userIdFollowing, 'add', 'following', userIdFollower, "addFollower");
         
         // TODO: Add to follower list
-        const addToFollowerList = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userIdFollower) },
-            { $push: { followers: userIdFollowing } },
-            { returnDocument: 'after' }
-        )
+        const addToFollowerList = await updateUniqueElementInList(userCollection, userIdFollower, 'add', 'followers', userIdFollowing, "addFollower");
 
-        if (!addToFollowerList || !addToFollowingList)
+        if (!addToFollowingList || !addToFollowerList)
             throw new Error("Could not add follower")
         
         return {

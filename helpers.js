@@ -346,7 +346,7 @@ export async function getTodayDate() {
  * 
  * @param {Object} collection MongoDB Collection
  * @param {string} documentId ID of Document
- * @param {string} action Are we adding or removing from list? 
+ * @param {string} action Input 'add' or 'remove' depending on action
  * @param {string} arrayField Name of array input to update 
  * @param {*} value Value to be adding or removing 
  * @param {String} functionName Name of the function where its being called from 
@@ -371,7 +371,7 @@ export async function updateUniqueElementInList(collection, documentId, action, 
         throw new Error("Invalid action. Use 'add' or 'remove'.");
     }
 
-    const result = await collection.updateOne(
+    const result = await collection.findOneAndUpdate(
         { _id: new ObjectId(documentId) },
         updateOperation,
         { returnDocument: 'after' }

@@ -60,11 +60,7 @@ const exportedMethods = {
 
         // Add postId to userId.posts array
         const userCollection = await users();
-        const updatedInfo = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userId) },
-            { $push: { posts: newId } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo = updateUniqueElementInList(userCollection, userId, 'add', 'posts', newId, 'createPost');
         // Validate that function was executed
         if (!updatedInfo)
             throw new Error('could not update movie successfully');
@@ -173,11 +169,8 @@ const exportedMethods = {
 
         // Add userId to posts.likes array 
         const postCollection = await posts();
-        const updatedInfo = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $push: { likes: userID } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'add', 'likes', userID, 'addLike');
+
         if (!updatedInfo)
             throw new Error("Could not add like to post")
         
@@ -197,11 +190,8 @@ const exportedMethods = {
 
         // Add userId to posts.likes array 
         const postCollection = await posts();
-        const updatedInfo = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $push: { dislikes: userID } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'add', 'dislikes', userID, 'addDislike');
+        
         if (!updatedInfo)
             throw new Error("Could not add like to post")
 
