@@ -390,7 +390,7 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
     await isStr(arrayField, `${functionName}-arrayField`);
     // ? Should Input value always be a string? 
 
-
+    // Remove all instances of value from all arrayField in all documents
     const updateOperation = { $pull: { [arrayField]: value } }; 
     collection.updateMany(
         {}, 
