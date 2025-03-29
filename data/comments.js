@@ -1,5 +1,5 @@
 import { comments, users, posts } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, trimArguments, validateIdAndReturnTrimmedId, getTodayDate } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, trimArguments, validateIdAndReturnTrimmedId, getTodayDate, updateUniqueElementInList } from "../helpers.js";
 import { userData, postData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
@@ -49,19 +49,11 @@ const exportedMethods = {
         
         // Add post to user
         const userCollection = await users();
-        const updatedInfo1 = await userCollection.findOneAndUpdate(
-            { _id: new ObjectId(userId) },
-            { $push: { comments: commentId } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo1 = await updateUniqueElementInList(userCollection, userId, 'add', 'comments', commentId, 'createComment');
 
         // Add post to user
         const postCollection = await posts();
-        const updatedInfo2 = await postCollection.findOneAndUpdate(
-            { _id: new ObjectId(postId) },
-            { $push: { comments: commentId } },
-            { returnDocument: 'after' }
-        )
+        const updatedInfo2 = await updateUniqueElementInList(postCollection, postId, 'add', 'comments', commentId, 'createComment');
         
         // Validate that function was executed
         if (!updatedInfo1 || !updatedInfo2)

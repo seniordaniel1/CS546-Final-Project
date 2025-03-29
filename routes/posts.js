@@ -44,10 +44,10 @@ router.get('/user/:id', async (req, res) => {
     try {
         // validate userId
         const userId = req.params.id;
-        
+
         if (!userId)
-            return res.status(400).json({ Error: `Id input not found` });    
-        
+            return res.status(400).json({ Error: `Id input not found` });
+
         await userData.getUserById(userId);
 
         // Get all posts made by user 
@@ -90,5 +90,93 @@ router.delete("/:id", async (req, res) => {
         return res.status(400).json({ Error: `${error.message}` });
     }
 });
+
+// * Delete posts by userId 
+router.delete("/user/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        if (!userId)
+            return res.status(400).json({ Error: `Id input not found` });
+
+        await userData.getUserById(userId);
+
+        const posts = await postData.removePostsByUserId(userId);
+        res.json(posts);
+    } catch (error) {
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        return res.status(400).json({ Error: `${error.message}` });
+    }
+})
+
+router.post("/like", async (req, res) => {
+    try {
+        // pd = postData
+        const pd = req.body;
+        const userId = pd.userId;
+        const postId = pd.postId;
+
+        // Validate that both inputs exist 
+        if (!userId || !postId) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        // Validate that both Ids are valid 
+        await userData.getUserById(userId);
+        await postData.getPostById(postId);
+        // Add like to post 
+        const ansData = await postData.addLike(postId, userId);
+        return res.json(ansData);
+    } catch (error) {
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No post with that id") {
+            return res.status(404).json({ message: "Post not found!" });
+        }
+        return res.status(400).json({ Error: `${error.message}` });
+    }
+})
+
+router.delete("/like", async (req, res) => {
+    try {
+        // pd = postData
+        const pd = req.body;
+        const userId = pd.userId;
+        const postId = pd.postId;
+
+        // Validate that both inputs exist 
+        if (!userId || !postId) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        // Validate that both Ids are valid 
+        await userData.getUserById(userId);
+        await postData.getPostById(postId);
+
+        // Remove like to post
+        const ansData = await postData.removeLike(postId, userId);
+        return ansData;
+    } catch (error) {
+        // If user doesnt exist, throw 404 error 
+        if (error.message === "No user with that id") {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        
+        // If user doesnt exist, throw 404 error
+        if (error.message === "No post with that id") {
+            return res.status(404).json({ message: "Post not found!" });
+        }
+        
+        return res.status(400).json({ Error: `${error.message}` });
+    }
+})
+
+
 
 export default router

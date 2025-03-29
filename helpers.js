@@ -340,3 +340,42 @@ export async function getTodayDate() {
     const yyyy = today.getFullYear();
     return `${mm}/${dd}/${yyyy}`;
 }
+
+/**
+ * Updates collection by only adding or removing unique elements
+ * 
+ * @param {Object} collection MongoDB Collection
+ * @param {string} documentId ID of Document
+ * @param {string} action Input 'add' or 'remove' depending on action
+ * @param {string} arrayField Name of array input to update 
+ * @param {*} value Value to be adding or removing 
+ * @param {String} functionName Name of the function where its being called from 
+ */
+export async function updateUniqueElementInList(collection, documentId, action, arrayField, value, functionName) {
+    // Validate inputs 
+    await checkNumArgs(arguments.length, 6);
+    await checkInputsExistence(Array.from(arguments));
+    await isObject(collection, `updateUniqueElementInList-${functionName}`);
+    await isStr(documentId, `updateUniqueElementInList-${functionName}`);
+    await isStr(action, `updateUniqueElementInList-${functionName}`);
+    await isStr(arrayField, `updateUniqueElementInList-${functionName}`);
+    // ? How to validate what type of input value is? should it always be a string? 
+
+    let updateOperation;
+
+    if (action === 'add') {
+        updateOperation = { $addToSet: { [arrayField]: value } };
+    } else if (action === 'remove') {
+        updateOperation = { $pull: { [arrayField]: value } }; 
+    } else {
+        throw new Error("Invalid action. Use 'add' or 'remove'.");
+    }
+
+    const result = await collection.findOneAndUpdate(
+        { _id: new ObjectId(documentId) },
+        updateOperation,
+        { returnDocument: 'after' }
+    );
+
+    return result; 
+}
