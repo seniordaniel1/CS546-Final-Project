@@ -112,10 +112,10 @@ const exportedMethods = {
         // Delete all comments that the user created
         await commentData.removeCommentsByUserId(userId);
 
-        // TODO: Delete all likes that user has made 
+        // Delete all likes that user has made 
         const postCollection = await posts();
         removeElementFromAllDocuments(postCollection, 'likes', userId, 'removeUser-removeLikes');
-           // TODO: Delete all dislikes that user has made 
+           // Delete all dislikes that user has made 
         removeElementFromAllDocuments(postCollection, 'dislikes', userId, 'removeUser-removeDislikes');
 
         // Delete user from user collections
