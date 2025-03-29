@@ -1,5 +1,5 @@
 import { posts, users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr, updateUniqueElementInList } from "../helpers.js";
 import { userData, commentData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
@@ -124,10 +124,7 @@ const exportedMethods = {
 
         // Delete post from User database
         const userCollection = await users();
-        await userCollection.updateOne(
-            { _id: new ObjectId(deletionInfo.userId) }, 
-            { $pull: { posts: postId } } 
-        );
+        await updateUniqueElementInList(userCollection, deletionInfo.userId, "remove", "posts", postId, "removePost");
 
         return { ...currPost, deleted: true };
     },
@@ -173,8 +170,6 @@ const exportedMethods = {
         postId = await validateIdAndReturnTrimmedId(postId);
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
-
-        console.log("After validation")
 
         // Add userId to posts.likes array 
         const postCollection = await posts();
