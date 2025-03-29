@@ -393,7 +393,7 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
 
     const updateOperation = { $pull: { [arrayField]: value } }; 
     collection.updateMany(
-        {},  // Target all documents
+        {}, 
         updateOperation
      );
 }
