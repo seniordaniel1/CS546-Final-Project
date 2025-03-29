@@ -355,10 +355,11 @@ export async function updateUniqueElementInList(collection, documentId, action, 
     // Validate inputs 
     await checkNumArgs(arguments.length, 6);
     await checkInputsExistence(Array.from(arguments));
-    await isObject(collection, `updateUniqueElementInList-${functionName}`);
-    await isStr(documentId, `updateUniqueElementInList-${functionName}`);
-    await isStr(action, `updateUniqueElementInList-${functionName}`);
-    await isStr(arrayField, `updateUniqueElementInList-${functionName}`);
+    await isStr(functionName, "updateUniqueElementInList-functionName");
+    await isObject(collection, `${functionName}-collection`);
+    await isStr(documentId, `${functionName}-documentId`);
+    await isStr(action, `${functionName}-action`);
+    await isStr(arrayField, `${functionName}-arrayField`);
     // ? How to validate what type of input value is? should it always be a string? 
 
     let updateOperation;
@@ -378,4 +379,21 @@ export async function updateUniqueElementInList(collection, documentId, action, 
     );
 
     return result; 
+}
+
+export async function removeElementFromAllDocuments(collection, arrayField, value, functionName){
+    // Validate inputs 
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 4);
+    await isStr(functionName, "removeElementFromAllDocuments-functionName");
+    await isObject(collection, `${functionName}-collection`);
+    await isStr(arrayField, `${functionName}-arrayField`);
+    // ? Should Input value always be a string? 
+
+
+    const updateOperation = { $pull: { [arrayField]: value } }; 
+    collection.updateMany(
+        {},  // Target all documents
+        updateOperation
+     );
 }
