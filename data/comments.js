@@ -114,17 +114,19 @@ const exportedMethods = {
 
         // Delete comment from User database
         const userCollection = await users();
-        const updateUser = await userCollection.updateOne(
-            { _id: new ObjectId(deletionInfo.userId) }, 
-            { $pull: { comments: commentId } } 
-        );
+        // const updateUser = await userCollection.updateOne(
+        //     { _id: new ObjectId(deletionInfo.userId) }, 
+        //     { $pull: { comments: commentId } } 
+        // );
+        const updateUser = updateUniqueElementInList(userCollection, deletionInfo.userId, 'remove', 'comments', commentId, 'removeComment');
 
         // Delete comment from Post database
         const postCollection = await posts();
-        const updatePost = await postCollection.updateOne(
-            { _id: new ObjectId(deletionInfo.postId) }, 
-            { $pull: { comments: commentId } } 
-        )
+        // const updatePost = await postCollection.updateOne(
+        //     { _id: new ObjectId(deletionInfo.postId) }, 
+        //     { $pull: { comments: commentId } } 
+        // )
+        const updatePost = await updateUniqueElementInList(postCollection, deletionInfo.postId, 'remove', 'comments', commentId, 'removeComment');
         if(!updateUser || !updatePost)
             throw new Error("Update did not work!");
 
