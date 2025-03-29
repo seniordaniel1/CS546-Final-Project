@@ -174,6 +174,8 @@ const exportedMethods = {
         await exportedMethods.getPostById(postId);
         await userData.getUserById(userID);
 
+        console.log("After validation")
+
         // Add userId to posts.likes array 
         const postCollection = await posts();
         const updatedInfo = await postCollection.findOneAndUpdate(
