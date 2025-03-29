@@ -87,14 +87,14 @@ async function followersTest(){
     // Make it such that user1 follows user2 
     await testCase(userData.addFollower, user1._id, user2._id);
 
-    // console.log("Before deleting a user:\n")
-    console.log("Before deleting a follower:\n")
+    console.log("Before deleting a user:\n")
+    // console.log("Before deleting a follower:\n")
     console.log(await userData.getAllUsers())
 
-    await testCase(userData.removeFollower, user1._id, user2._id);
-    // await testCase(userData.removeUser, user2._id);
-    // console.log("After deleting a user:\n")
-    console.log("After deleting a Follower:\n")
+    // await testCase(userData.removeFollower, user1._id, user2._id);
+    await testCase(userData.removeUser, user2._id);
+    console.log("After deleting a user:\n")
+    // console.log("After deleting a Follower:\n")
     console.log(await userData.getAllUsers())
 }
 
@@ -137,7 +137,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await deleteUserTest();
+        await followersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
