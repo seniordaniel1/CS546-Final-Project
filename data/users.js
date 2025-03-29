@@ -115,11 +115,15 @@ const exportedMethods = {
         // Delete all likes that user has made 
         const postCollection = await posts();
         removeElementFromAllDocuments(postCollection, 'likes', userId, 'removeUser-removeLikes');
-           // Delete all dislikes that user has made 
+        // Delete all dislikes that user has made 
         removeElementFromAllDocuments(postCollection, 'dislikes', userId, 'removeUser-removeDislikes');
 
-        // Delete user from user collections
+        // Delete all references from users that user is following and user is followed by
         const userCollection = await users();
+        removeElementFromAllDocuments(userCollection, 'followers', userId, 'removeUser');
+        removeElementFromAllDocuments(userCollection, 'following', userId, 'removeUser');
+
+        // Delete user from user collections
         const deletionInfo = await userCollection.findOneAndDelete({
             _id: new ObjectId(userId)
         });
