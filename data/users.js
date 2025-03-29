@@ -176,15 +176,17 @@ const exportedMethods = {
 
         // Remove FollowerId from following list 
         const userCollection = await users();
-        await userCollection.updateOne(
-            { _id: new ObjectId(userIdFollowing) },
-            { $pull: { following: userIdFollower } } 
-        )
+        // await userCollection.updateOne(
+        //     { _id: new ObjectId(userIdFollowing) },
+        //     { $pull: { following: userIdFollower } } 
+        // )
+        await updateUniqueElementInList(userCollection, userIdFollowing, 'remove', 'following', userIdFollower, 'removeFollower');
         // Remove followingId from follower list
-        await userCollection.updateOne(
-            { _id: new ObjectId(userIdFollower) },
-            { $pull: { followers: userIdFollowing } } 
-        )
+        // await userCollection.updateOne(
+        //     { _id: new ObjectId(userIdFollower) },
+        //     { $pull: { followers: userIdFollowing } } 
+        // )
+        await updateUniqueElementInList(userCollection, userIdFollower, 'remove', 'followers', userIdFollowing, 'removeFollower');
     }
 }
 

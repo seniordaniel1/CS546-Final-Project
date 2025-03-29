@@ -87,12 +87,14 @@ async function followersTest(){
     // Make it such that user1 follows user2 
     await testCase(userData.addFollower, user1._id, user2._id);
 
-    console.log("Before deleting a user:\n")
+    // console.log("Before deleting a user:\n")
+    console.log("Before deleting a follower:\n")
     console.log(await userData.getAllUsers())
 
-    // await testCase(userData.removeFollower, user1._id, user2._id);
-    await testCase(userData.removeUser, user2._id);
-    console.log("After deleting a user:\n")
+    await testCase(userData.removeFollower, user1._id, user2._id);
+    // await testCase(userData.removeUser, user2._id);
+    // console.log("After deleting a user:\n")
+    console.log("After deleting a Follower:\n")
     console.log(await userData.getAllUsers())
 }
 
@@ -113,11 +115,11 @@ async function likeTest() {
     console.log(await postData.getAllPosts());
 
     // After removal
-    // await postData.removeLike(post1._id, user1._id);
-    // await postData.removeDislike(post1._id, user2._id);
+    await postData.removeLike(post1._id, user1._id);
+    await postData.removeDislike(post1._id, user2._id);
 
-    // console.log("Afte removal:")
-    // console.log(await postData.getAllPosts());
+    console.log("After removal:")
+    console.log(await postData.getAllPosts());
 }
 
 // Connect to the database and reset it before starting the server
@@ -135,7 +137,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await deleteCommentTest();
+        await followersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
