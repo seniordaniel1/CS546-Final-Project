@@ -150,10 +150,10 @@ const exportedMethods = {
 
         const userCollection = await users();
         
-        // TODO: Add to following list 
+        // Add to following list 
         const addToFollowingList = await updateUniqueElementInList(userCollection, userIdFollowing, 'add', 'following', userIdFollower, "addFollower");
         
-        // TODO: Add to follower list
+        // Add to follower list
         const addToFollowerList = await updateUniqueElementInList(userCollection, userIdFollower, 'add', 'followers', userIdFollowing, "addFollower");
 
         if (!addToFollowingList || !addToFollowerList)

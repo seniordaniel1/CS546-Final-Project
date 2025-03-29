@@ -1,10 +1,6 @@
-// TODO: Modify the collection name to users -- please refer to lab4
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
-// TODO: Create relevant file for CRUD operations: Needs to connect to MongoDB database as done in Lab4
 import { userData, postData, commentData } from "./data/index.js";
 import express from 'express';
-
-// TODO: Update Routes 
 import configRoutesFunction from './routes/index.js';
 
 
