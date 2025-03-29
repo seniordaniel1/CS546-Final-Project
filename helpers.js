@@ -343,13 +343,13 @@ export async function getTodayDate() {
 
 /**
  * Updates collection by only adding or removing unique elements
- * 
  * @param {Object} collection MongoDB Collection
  * @param {string} documentId ID of Document
  * @param {string} action Input 'add' or 'remove' depending on action
  * @param {string} arrayField Name of array input to update 
  * @param {*} value Value to be adding or removing 
  * @param {String} functionName Name of the function where its being called from 
+ * @returns MongoDB Object that was added to or removed from
  */
 export async function updateUniqueElementInList(collection, documentId, action, arrayField, value, functionName) {
     // Validate inputs 
