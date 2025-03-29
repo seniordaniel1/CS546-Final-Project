@@ -112,7 +112,7 @@ router.delete("/user/:id", async (req, res) => {
     }
 })
 
-router.post("/user/like", async (req, res) => {
+router.post("/like", async (req, res) => {
     try {
         // pd = postData
         const pd = req.body;
@@ -127,9 +127,9 @@ router.post("/user/like", async (req, res) => {
         // Validate that both Ids are valid 
         await userData.getUserById(userId);
         await postData.getPostById(postId);
-        console.log("Before add like")
         // Add like to post 
-        await postData.addLike(postId, userId);
+        const ansData = await postData.addLike(postId, userId);
+        return res.json(ansData);
     } catch (error) {
         // If user doesnt exist, throw 404 error 
         if (error.message === "No user with that id") {
@@ -143,7 +143,7 @@ router.post("/user/like", async (req, res) => {
     }
 })
 
-router.delete("/user/like", async (req, res) => {
+router.delete("/like", async (req, res) => {
     try {
         // pd = postData
         const pd = req.body;
@@ -160,7 +160,8 @@ router.delete("/user/like", async (req, res) => {
         await postData.getPostById(postId);
 
         // Remove like to post
-        await postData.removeLike(postId, userId);
+        const ansData = await postData.removeLike(postId, userId);
+        return ansData;
     } catch (error) {
         // If user doesnt exist, throw 404 error 
         if (error.message === "No user with that id") {
