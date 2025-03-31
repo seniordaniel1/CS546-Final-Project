@@ -112,6 +112,7 @@ router.delete("/user/:id", async (req, res) => {
     }
 })
 
+// * Add a like
 router.post("/like", async (req, res) => {
     try {
         // pd = postData
@@ -143,6 +144,7 @@ router.post("/like", async (req, res) => {
     }
 })
 
+// * Remove a like 
 router.delete("/like", async (req, res) => {
     try {
         // pd = postData
