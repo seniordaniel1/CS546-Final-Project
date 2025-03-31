@@ -1,0 +1,16 @@
+<h1>Content: {{post.content}}</h2>
+{{post.imageUrl}} 
+<h2>Created at: {{post.timestamp}}</h2>
+
+<h2>Comments</h2>
+{{#each comments}}
+<a href="/comments/{{this._id}}">
+    <ul>
+        <li>
+            {{this.text}} 
+            <br>
+            {{this.timestamp}}
+        </li>
+    </ul>
+</a>
+{{/each}}

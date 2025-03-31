@@ -5,22 +5,23 @@
 
 <h3>Posts: {{posts.length}}</h3>
 {{#each posts}}
-    {{!-- <a href="/movie/{{this.imdbID}}"> --}}
-<ul>
-    <li>
-        {{this.content}}
-    </li>
-</ul>
-    {{!-- </a> --}}
+<a href="/posts/{{this._id}}">
+    <ul>
+        <li>
+            {{this.content}}
+        </li>
+    </ul>
+</a>
 {{/each}}
 
 <h3>Comments: {{comments.length}}</h3>
 {{#each comments}}
 {{!-- <a href="/movie/{{this.imdbID}}"> --}}
-<ul>
-    <li>
-        {{this.text}}
-    </li>
-</ul>
-    {{!-- </a> --}}
+    <ul>
+        <li>
+            {{this.text}}
+        </li>
+    </ul>
+    {{!--
+</a> --}}
 {{/each}}
