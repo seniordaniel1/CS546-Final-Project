@@ -51,14 +51,14 @@ async function deletePostTest(){
     const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
     const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
     
-    console.log("All users before user deletion:\n", await userData.getAllUsers());
-    console.log("All posts before user deletion:\n", await postData.getAllPosts());
-    console.log("All Comments before user deletion:\n",await commentData.getAllComments());
+    // console.log("All users before user deletion:\n", await userData.getAllUsers());
+    // console.log("All posts before user deletion:\n", await postData.getAllPosts());
+    // console.log("All Comments before user deletion:\n",await commentData.getAllComments());
 
-    await testCase(postData.removePost, post1._id);
-    console.log("All users after user deletion:\n", await userData.getAllUsers());
-    console.log("All posts after user deletion:\n", await postData.getAllPosts());
-    console.log("All comments after user deletion:\n",await commentData.getAllComments());
+    // await testCase(postData.removePost, post1._id);
+    // console.log("All users after user deletion:\n", await userData.getAllUsers());
+    // console.log("All posts after user deletion:\n", await postData.getAllPosts());
+    // console.log("All comments after user deletion:\n",await commentData.getAllComments());
 }
 
 async function deleteCommentTest() {
@@ -87,9 +87,9 @@ async function followersTest(){
     // Make it such that user1 follows user2 
     await testCase(userData.addFollower, user1._id, user2._id);
 
-    console.log("Before deleting a user:\n")
-    // console.log("Before deleting a follower:\n")
-    console.log(await userData.getAllUsers())
+    // console.log("Before deleting a user:\n")
+    // // console.log("Before deleting a follower:\n")
+    // console.log(await userData.getAllUsers())
 
     // // await testCase(userData.removeFollower, user1._id, user2._id);
     // await testCase(userData.removeUser, user2._id);
@@ -137,7 +137,7 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await followersTest();
+        await deletePostTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

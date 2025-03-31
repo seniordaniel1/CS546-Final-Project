@@ -30,7 +30,7 @@ const constructorMethod = (app) => {
     // app.use('/comments', commentRoutes)
 
     app.use('*', (req, res) => {
-        return res.status(404).render('404', { title: "404 Error: Page Not found", searchQuery: "" })
+        return res.status(404).render('404', { title: "404 Error: Page Not found", message: "Page not found" })
     });
 };
 
