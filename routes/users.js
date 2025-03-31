@@ -6,7 +6,8 @@ const router = express.Router();
 router.get("/:id", async (req, res) => {
     try {
         const user = await userData.getUserById(req.params.id);
-        return res.json(user);
+        // return res.json(user);
+        return res.render('getUserById', { user: user, title: `${user._id}` });
     } catch (e) {
         return res.status(404).json({ message: "not found!" });
     }

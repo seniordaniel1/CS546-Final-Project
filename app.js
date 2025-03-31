@@ -91,11 +91,11 @@ async function followersTest(){
     // console.log("Before deleting a follower:\n")
     console.log(await userData.getAllUsers())
 
-    // await testCase(userData.removeFollower, user1._id, user2._id);
-    await testCase(userData.removeUser, user2._id);
-    console.log("After deleting a user:\n")
-    // console.log("After deleting a Follower:\n")
-    console.log(await userData.getAllUsers())
+    // // await testCase(userData.removeFollower, user1._id, user2._id);
+    // await testCase(userData.removeUser, user2._id);
+    // console.log("After deleting a user:\n")
+    // // console.log("After deleting a Follower:\n")
+    // console.log(await userData.getAllUsers())
 }
 
 async function likeTest() {
