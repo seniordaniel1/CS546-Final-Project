@@ -33,7 +33,11 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const postList = await postData.getAllPosts();
-        return res.json(postList);
+        return res.render('getAllPosts', {
+            title: "All Posts",
+            posts: postList
+        });
+        //return res.json(postList);
     } catch (e) {
         // Something went wrong with the server!
         return res.status(400).send();
