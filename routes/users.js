@@ -21,9 +21,7 @@ router.get("/:id", async (req, res) => {
 // * Get all users
 router.get("/", async (req, res) => {
     try {
-        console.log("Reached all users route")
         const users = await userData.getAllUsers();
-        console.log("UserList: ", users);
         return res.render('getAllUsers', {
             title: "All users",
             users: users
