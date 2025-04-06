@@ -16,12 +16,13 @@
 
 <h3>Comments: {{comments.length}}</h3>
 {{#each comments}}
-{{!-- <a href="/movie/{{this.imdbID}}"> --}}
+<a href="/posts/{{this.postId}}">
     <ul>
         <li>
             {{this.text}}
+            <br>
+            {{this.timestamp}}
         </li>
     </ul>
-    {{!--
-</a> --}}
+</a> 
 {{/each}}
