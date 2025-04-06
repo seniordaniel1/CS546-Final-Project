@@ -138,7 +138,8 @@ async function startServer() {
             console.log('Your routes will be running on http://localhost:3000');
         });
 
-        await deletePostTest();
+        // await deletePostTest();
+        await followersTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);

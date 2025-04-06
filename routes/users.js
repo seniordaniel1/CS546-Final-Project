@@ -1,4 +1,5 @@
 import { userData, postData, commentData } from '../data/index.js';
+import { getUserJsonsFromUserIds } from '../helpers.js';
 import express from 'express';
 const router = express.Router();
 
@@ -126,5 +127,31 @@ router.delete("/follow", async (req, res) => {
         return res.status(400).json({ Error: `${error.message}` });
     }
 })
+
+// * Print all followers by userId
+router.get("/:id/followers", async (req, res) => {
+    try {
+        const user = await userData.getUserById(req.params.id);
+        const userFollowerList = user.followers
+        const followers = await getUserJsonsFromUserIds(userFollowerList, "getUserFollowers");
+        return res.render('getUserFollow', { user: user, list: followers, listType: "Followers" });
+    } catch (error) {
+        return res.json(error);
+    }
+})
+
+// * Print all following by userId
+router.get("/:id/following", async (req, res) => {
+    try {
+        const user = await userData.getUserById(req.params.id);
+        const userFollowingList = user.following
+        const following = await getUserJsonsFromUserIds(userFollowingList, "getUserFollowing");
+        console.log("Following: ", following)
+        return res.render('getUserFollow', { user: user, list: following, listType: "Following" });
+    } catch (error) {
+        return res.json(error);
+    }
+})
+
 
 export default router
