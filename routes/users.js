@@ -134,7 +134,7 @@ router.get("/:id/followers", async (req, res) => {
         const user = await userData.getUserById(req.params.id);
         const userFollowerList = user.followers
         const followers = await getUserJsonsFromUserIds(userFollowerList, "getUserFollowers");
-        return res.render('getUserFollow', { user: user, list: followers, listType: "Followers" });
+        return res.render('getUserFollow', { user: user, list: followers, listType: "Followers", title: `${user.username}'s Followers` });
     } catch (error) {
         return res.json(error);
     }
@@ -147,7 +147,7 @@ router.get("/:id/following", async (req, res) => {
         const userFollowingList = user.following
         const following = await getUserJsonsFromUserIds(userFollowingList, "getUserFollowing");
         console.log("Following: ", following)
-        return res.render('getUserFollow', { user: user, list: following, listType: "Following" });
+        return res.render('getUserFollow', { user: user, list: following, listType: "Following", title: `${user.username} Following List` });
     } catch (error) {
         return res.json(error);
     }
