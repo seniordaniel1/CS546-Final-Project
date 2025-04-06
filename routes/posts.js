@@ -69,7 +69,6 @@ router.get("/:id", async (req, res) => {
         const post = await postData.getPostById(req.params.id)
         const tmpComments = await commentData.getCommentsByPostId(post._id);
         const comments = await addUserJsonToInput(tmpComments, "getPostById");
-        console.log("Comments: ", comments);
         return res.render('getPostById', {
             title: "Insert post title here",
             post: post,

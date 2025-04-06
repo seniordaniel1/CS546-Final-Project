@@ -415,14 +415,12 @@ export async function addUserJsonToInput(inputJsons, functionName) {
     // Validate inputs 
     await checkInputsExistence(Array.from(arguments));
     await checkNumArgs(arguments.length, 2);
-    console.log(typeof inputJsons);
     await isObject(inputJsons, `${functionName}-inputJsons`);
 
     // Add user json to input json with the key 'user'
     for (let i = 0; i < inputJsons.length; i++) {
         const inputJson = inputJsons[i];
         const userId = inputJson.userId;
-        console.log("userID", userId);
         if (userId !== undefined) {
             const userJson = await userData.getUserById(userId); 
             inputJson.user = userJson;
