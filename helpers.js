@@ -416,6 +416,12 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
      );
 }
 
+/**
+ * Given an array of JSONs, append the associated user JSON thats connected to the userId element
+ * @param {Array[JSON]} inputJsons List of JSONs that must have the 'userId' key
+ * @param {String} functionName Name of function
+ * @returns Array of Objects with associated user object appended
+ */
 export async function addUserJsonToInput(inputJsons, functionName) {
     // Validate inputs 
     await checkInputsExistence(Array.from(arguments));
