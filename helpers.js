@@ -213,9 +213,22 @@ async function isObject(object, object_str) {
     await checkNumArgs(arguments.length, 2);
     await checkInputsExistence(Array.from(arguments));
 
-    if (!(typeof object === 'object' && !Array.isArray(object) && object !== null))
-        throw new Error(`${object_str} input must be an object input`);
+    // Check if the input is an array
+    if (Array.isArray(object)) {
+        // Ensure each element in the array is an object
+        for (const item of object) {
+            if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+                throw new Error(`${object_str} input must be an array of objects`);
+            }
+        }
+    } else {
+        // Check if the input is a singular object
+        if (typeof object !== 'object' || object === null) {
+            throw new Error(`${object_str} input must be an object input`);
+        }
+    }
 }
+
 
 /**
  * Validates if name input is valid
@@ -330,15 +343,20 @@ export async function validateListUserIds(userIds, listName) {
 }
 
 /**
- * Function that returns todays date in MM/DD/YYYY
- * @returns Todays date in MM/DD/YYYY
+ * Function that returns today's date and time in MM/DD/YYYY HH:MM:SS format
+ * @returns Today's date and time in MM/DD/YYYY HH:MM:SS format
  */
 export async function getTodayDate() {
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, '0');
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const yyyy = today.getFullYear();
-    return `${mm}/${dd}/${yyyy}`;
+
+    const hh = String(today.getHours()).padStart(2, '0');
+    const mn = String(today.getMinutes()).padStart(2, '0');
+    const ss = String(today.getSeconds()).padStart(2, '0');
+
+    return `${mm}/${dd}/${yyyy} ${hh}:${mn}:${ss}`;
 }
 
 /**
@@ -396,4 +414,28 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
         {}, 
         updateOperation
      );
+}
+
+/**
+ * Given an array of JSONs, append the associated user JSON thats connected to the userId element
+ * @param {Array[JSON]} inputJsons List of JSONs that must have the 'userId' key
+ * @param {String} functionName Name of function
+ * @returns Array of Objects with associated user object appended
+ */
+export async function addUserJsonToInput(inputJsons, functionName) {
+    // Validate inputs 
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 2);
+    await isObject(inputJsons, `${functionName}-inputJsons`);
+
+    // Add user json to input json with the key 'user'
+    for (let i = 0; i < inputJsons.length; i++) {
+        const inputJson = inputJsons[i];
+        const userId = inputJson.userId;
+        if (userId !== undefined) {
+            const userJson = await userData.getUserById(userId); 
+            inputJson.user = userJson;
+        }
+    }
+    return inputJsons;
 }

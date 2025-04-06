@@ -1,23 +1,31 @@
-import { userData } from '../data/index.js';
+import { userData, postData, commentData } from '../data/index.js';
 import express from 'express';
 const router = express.Router();
 
 // * Get user by ID
 router.get("/:id", async (req, res) => {
     try {
+        // Validating that input is a valid user 
         const user = await userData.getUserById(req.params.id);
-        // return res.json(user);
-        return res.render('getUserById', { user: user, title: `${user._id}` });
+        
+        // Get all posts that user has made
+        const posts = await postData.getPostsByUserId(user._id);
+        // Get all comments that user has made 
+        const comments = await commentData.getCommentsByUserId(user._id);
+        return res.render('getUserById', { user: user, title: `${user._id}`, posts: posts, comments: comments });
     } catch (e) {
-        return res.status(404).json({ message: "not found!" });
+        return res.status(404).render('404', { title: "404 Error: User Not found", message: "User not found" })
     }
 });
 
 // * Get all users
 router.get("/", async (req, res) => {
     try {
-        const userList = await userData.getAllUsers();
-        return res.json(userList);
+        const users = await userData.getAllUsers();
+        return res.render('getAllUsers', {
+            title: "All users",
+            users: users
+        })
     } catch (e) {
         // Something went wrong with the server!
         return res.status(400).send();

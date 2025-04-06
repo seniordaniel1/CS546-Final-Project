@@ -1,5 +1,6 @@
-import { postData, userData } from '../data/index.js';
+import { postData, userData, commentData } from '../data/index.js';
 import express from 'express';
+import { addUserJsonToInput } from '../helpers.js';
 const router = express.Router();
 
 // * Create a new post
@@ -65,10 +66,19 @@ router.get('/user/:id', async (req, res) => {
 // * Get post by id 
 router.get("/:id", async (req, res) => {
     try {
-        const post = await postData.getPostById(req.params.id)
-        return res.json(post);
+        const tmpPost = await postData.getPostById(req.params.id)
+        const posts = await addUserJsonToInput([tmpPost], "getPostById-post");
+        const post = posts[0];
+        console.log("Post: ", post);
+        const tmpComments = await commentData.getCommentsByPostId(post._id);
+        const comments = await addUserJsonToInput(tmpComments, "getPostById-comments");
+        return res.render('getPostById', {
+            title: "Insert post title here",
+            post: post,
+            comments: comments
+        })
     } catch (e) {
-        return res.status(404).json({ message: "post not found!" });
+        return res.status(404).render('404', { title: "404 Error: Post Not found", message: "Post not found" + e })
     }
 });
 
