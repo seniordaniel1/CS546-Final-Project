@@ -1,5 +1,6 @@
 import { postData, userData, commentData } from '../data/index.js';
 import express from 'express';
+import { addUserJsonToInput } from '../helpers.js';
 const router = express.Router();
 
 // * Create a new post
@@ -66,8 +67,8 @@ router.get('/user/:id', async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const post = await postData.getPostById(req.params.id)
-        const comments = await commentData.getCommentsByPostId(post._id);
-
+        const tmpComments = await commentData.getCommentsByPostId(post._id);
+        const comments = await addUserJsonToInput(tmpComments, "getPostById");
         console.log("Comments: ", comments);
         return res.render('getPostById', {
             title: "Insert post title here",

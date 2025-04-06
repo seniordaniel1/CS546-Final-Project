@@ -4,10 +4,12 @@
 
 <h2>Comments</h2>
 {{#each comments}}
-<a href="/comments/{{this._id}}">
+<a href="/users/{{this.userId}}">
     <ul>
         <li>
-            {{this.text}} 
+            {{this.user.username}}
+            <br>
+            {{this.text}}
             <br>
             {{this.timestamp}}
         </li>

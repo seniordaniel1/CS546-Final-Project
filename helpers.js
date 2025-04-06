@@ -213,9 +213,22 @@ async function isObject(object, object_str) {
     await checkNumArgs(arguments.length, 2);
     await checkInputsExistence(Array.from(arguments));
 
-    if (!(typeof object === 'object' && !Array.isArray(object) && object !== null))
-        throw new Error(`${object_str} input must be an object input`);
+    // Check if the input is an array
+    if (Array.isArray(object)) {
+        // Ensure each element in the array is an object
+        for (const item of object) {
+            if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+                throw new Error(`${object_str} input must be an array of objects`);
+            }
+        }
+    } else {
+        // Check if the input is a singular object
+        if (typeof object !== 'object' || object === null) {
+            throw new Error(`${object_str} input must be an object input`);
+        }
+    }
 }
+
 
 /**
  * Validates if name input is valid
@@ -396,4 +409,24 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
         {}, 
         updateOperation
      );
+}
+
+export async function addUserJsonToInput(inputJsons, functionName) {
+    // Validate inputs 
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 2);
+    console.log(typeof inputJsons);
+    await isObject(inputJsons, `${functionName}-inputJsons`);
+
+    // Add user json to input json with the key 'user'
+    for (let i = 0; i < inputJsons.length; i++) {
+        const inputJson = inputJsons[i];
+        const userId = inputJson.userId;
+        console.log("userID", userId);
+        if (userId !== undefined) {
+            const userJson = await userData.getUserById(userId); 
+            inputJson.user = userJson;
+        }
+    }
+    return inputJsons;
 }
