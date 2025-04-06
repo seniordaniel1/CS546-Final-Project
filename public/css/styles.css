@@ -6,7 +6,7 @@ body {
 }
 
 header {
-  background-color: #333;
+  background-color: #000000;
   color: white;
   padding: 1rem 0;
   text-align: center;
@@ -20,7 +20,7 @@ nav {
 nav a {
   margin: 0 1rem;
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
 }
 
 nav a:hover {
@@ -33,11 +33,20 @@ main {
 }
 
 footer {
-  background-color: #333;
+  background-color: #000000;
   color: white;
   text-align: center;
   padding: 1rem 0;
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+.post {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
