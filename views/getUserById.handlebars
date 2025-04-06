@@ -1,0 +1,28 @@
+<h1>{{user.firstName}} {{user.lastName}}</h1>
+<h2>Email: {{user.email}}</h2>
+<h2>Followers: {{user.followers.length}}</h2>
+<h2>Following: {{user.following.length}}</h2>
+
+<h3>Posts: {{posts.length}}</h3>
+{{#each posts}}
+<a href="/posts/{{this._id}}">
+    <ul>
+        <li>
+            {{this.content}}
+        </li>
+    </ul>
+</a>
+{{/each}}
+
+<h3>Comments: {{comments.length}}</h3>
+{{#each comments}}
+<a href="/posts/{{this.postId}}">
+    <ul>
+        <li>
+            {{this.text}}
+            <br>
+            {{this.timestamp}}
+        </li>
+    </ul>
+</a> 
+{{/each}}

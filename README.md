@@ -9,38 +9,35 @@
 
 ## About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+This site enables users to create an account, and make their own blogs. 
 
 ## Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+Clone the repository and go to the directory:
+```
+git clone https://github.com/seniordaniel1/CS546-Final-Project.git
+cd CS546-Final-Project
+```
 
 ### Prerequisites
 
-What things you need to install the software and how to install them.
+To run the program, you need the following installed: 
 
-```
-Give examples
-```
+- [NodeJS](https://nodejs.org/en/download)
+- [MongoDB](https://www.mongodb.com/try/download/community)
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
+Assuming you are already in the project repository:
 
 ```
-Give the example
+npm i 
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
 
 ## Usage <a name = "usage"></a>
 
-Add notes about how to use the system.
+To run the project, do the following:
+
+```
+npm start
+```

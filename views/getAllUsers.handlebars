@@ -1,0 +1,11 @@
+<h1>{{title}}</h1>
+
+{{#each users}}
+<a href="/users/{{this._id}}">
+    <ul>
+        <li>
+            {{this.username}}
+        </li>
+    </ul>
+</a>
+{{/each}}
