@@ -1,18 +1,16 @@
-<h1>Content: {{post.content}}</h2>
-{{post.imageUrl}} 
+<h1>Content: {{post.content}}</h1>
+{{post.imageUrl}}
 <h2>Created at: {{post.timestamp}}</h2>
 
 <h2>Comments</h2>
 {{#each comments}}
-<a href="/users/{{this.userId}}">
-    <ul>
-        <li>
-            {{this.user.username}}
-            <br>
-            {{this.text}}
-            <br>
-            {{this.timestamp}}
-        </li>
-    </ul>
-</a>
+<ul>
+    <li>
+        <a href="/users/{{this.userId}}">{{this.user.username}}</a>
+        <br>
+        {{this.text}}
+        <br>
+        {{this.timestamp}}
+    </li>
+</ul>
 {{/each}}
