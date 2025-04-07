@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
+  background-color: #000000;
 }
 
 header {
@@ -10,6 +10,9 @@ header {
   color: white;
   padding: 1rem 0;
   text-align: center;
+}
+h1 {
+  color: white;
 }
 
 nav {
