@@ -146,7 +146,6 @@ router.get("/:id/following", async (req, res) => {
         const user = await userData.getUserById(req.params.id);
         const userFollowingList = user.following
         const following = await getUserJsonsFromUserIds(userFollowingList, "getUserFollowing");
-        console.log("Following: ", following)
         return res.render('getUserFollow', { user: user, list: following, listType: "Following", title: `${user.username} Following List` });
     } catch (error) {
         return res.json(error);
