@@ -439,3 +439,31 @@ export async function addUserJsonToInput(inputJsons, functionName) {
     }
     return inputJsons;
 }
+
+/**
+ * Given an array of UserIDs, return a list of JSON objects for each associated user
+ * @param {Array[String]} userIds List of UserIDs
+ * @param {String} functionName Name of function
+ * @returns Array of JSON objects with associated user data
+ */
+export async function getUserJsonsFromUserIds(userIds, functionName) {
+    // Validate inputs 
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 2);
+    await isArray(userIds, `${functionName}-userIds`);
+
+    // Initialize an array to hold the user JSON results
+    const userJsons = [];
+
+    // Retrieve user JSON for each UserID
+    for (let i = 0; i < userIds.length; i++) {
+        const userId = userIds[i];
+        if (userId !== undefined) {
+            const userJson = await userData.getUserById(userId);
+            if (userJson) {
+                userJsons.push(userJson); 
+            }
+        }
+    }
+    return userJsons; 
+}

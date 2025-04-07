@@ -1,0 +1,12 @@
+<a href="/users/{{user._id}}">
+    <h1>{{user.username}}</h1>
+</a>
+<h2>{{listType}}</h2>
+
+{{#each list}}
+<ul>
+    <li>
+        <a href="/users/{{this._id}}">{{this.username}}</a>
+    </li>
+</ul>
+{{/each}}
