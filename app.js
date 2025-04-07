@@ -5,7 +5,7 @@ import configRoutesFunction from './routes/index.js';
 
 
 const app = express();
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json());
 
 async function usersTest() {
     // Create 2 users

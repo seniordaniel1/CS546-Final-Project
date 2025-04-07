@@ -75,13 +75,14 @@ router.get("/:id", async (req, res) => {
 
         const likes = await getUserJsonsFromUserIds(post.likes, "getPostById-userLikes");
         const dislikes = await getUserJsonsFromUserIds(post.dislikes, "getPostById-userLikes");
-        console.log("Likes: ", likes);
+        const likeScore = likes.length - dislikes.length
         return res.render('getPostById', {
             title: "Insert post title here",
             post: post,
             comments: comments,
             likes: likes,
-            dislikes: dislikes
+            dislikes: dislikes,
+            likeScore: likeScore
         })
     } catch (e) {
         return res.status(404).render('404', { title: "404 Error: Post Not found", message: "Post not found" + e })
