@@ -73,7 +73,7 @@ router.get("/:id", async (req, res) => {
         const tmpPost = await postData.getPostById(req.params.id)
         const posts = await addUserJsonToInput([tmpPost], "getPostById-post");
         const post = posts[0];
-        
+
         const tmpComments = await commentData.getCommentsByPostId(post._id);
         const comments = await addUserJsonToInput(tmpComments, "getPostById-comments");
 
@@ -94,48 +94,48 @@ router.get("/:id", async (req, res) => {
 
 // * Get likes by id
 router.get('/:id/likes', async (req, res) => {
-try {
-    // Get current post 
-    const tmpPost = await postData.getPostById(req.params.id)
-    
-    // Get Current user
-    const tmpCurrUser = await getUserJsonsFromUserIds([tmpPost.userId], "getPostLikes-currUser")
-    const currUser = tmpCurrUser[0];
+    try {
+        // Get current post 
+        const tmpPost = await postData.getPostById(req.params.id)
 
-    // Get JSON List of users who liked the post 
-    const userLikes = await getUserJsonsFromUserIds(tmpPost.likes, "getPostLikes-userLikes")
-    return res.render('(dis)likes.handlebars', {
-        listType: "Likes",
-        list: userLikes,
-        user: currUser,
-        title: `${currUser.username} Like List`
-    })
-} catch (error) {
-    return res.status(400).render('400', { title: "400 Error: Something went wrong", message: "Post not found" + error })
-}
+        // Get Current user
+        const tmpCurrUser = await getUserJsonsFromUserIds([tmpPost.userId], "getPostLikes-currUser")
+        const currUser = tmpCurrUser[0];
+
+        // Get JSON List of users who liked the post 
+        const userLikes = await getUserJsonsFromUserIds(tmpPost.likes, "getPostLikes-userLikes")
+        return res.render('(dis)likes.handlebars', {
+            listType: "Likes",
+            list: userLikes,
+            user: currUser,
+            title: `${currUser.username} Like List`
+        })
+    } catch (error) {
+        return res.status(400).render('400', { title: "400 Error: Something went wrong", message: "Post not found" + error })
+    }
 })
 
 // * Get dislikes by id
 router.get('/:id/dislikes', async (req, res) => {
-try {
-    // Get current post 
-    const tmpPost = await postData.getPostById(req.params.id)
+    try {
+        // Get current post 
+        const tmpPost = await postData.getPostById(req.params.id)
 
-    // Get Current user
-    const tmpCurrUser = await getUserJsonsFromUserIds([tmpPost.userId], "getPostDislikes-currUser")
-    const currUser = tmpCurrUser[0];
+        // Get Current user
+        const tmpCurrUser = await getUserJsonsFromUserIds([tmpPost.userId], "getPostDislikes-currUser")
+        const currUser = tmpCurrUser[0];
 
-    // Get JSON List of users who liked the post 
-    const userDisLikes = await getUserJsonsFromUserIds(tmpPost.dislikes, "getPostDislikes-userLikes")
-    return res.render('(dis)likes.handlebars', {
-        listType: "Dislikes",
-        list: userDisLikes,
-        user: currUser,
-        title: `${currUser.username} Dislike List`
-    })
-} catch (error) {
-    return res.status(400).render('400', { title: "400 Error: Something went wrong", message: "Post not found" + error })
-}
+        // Get JSON List of users who liked the post 
+        const userDisLikes = await getUserJsonsFromUserIds(tmpPost.dislikes, "getPostDislikes-userLikes")
+        return res.render('(dis)likes.handlebars', {
+            listType: "Dislikes",
+            list: userDisLikes,
+            user: currUser,
+            title: `${currUser.username} Dislike List`
+        })
+    } catch (error) {
+        return res.status(400).render('400', { title: "400 Error: Something went wrong", message: "Post not found" + error })
+    }
 })
 
 // // * Delete an existing post 
@@ -235,12 +235,12 @@ try {
 //         if (error.message === "No user with that id") {
 //             return res.status(404).json({ message: "User not found!" });
 //         }
-        
+
 //         // If user doesnt exist, throw 404 error
 //         if (error.message === "No post with that id") {
 //             return res.status(404).json({ message: "Post not found!" });
 //         }
-        
+
 //         return res.status(400).json({ Error: `${error.message}` });
 //     }
 // })

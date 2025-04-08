@@ -5,7 +5,7 @@ import configRoutesFunction from './routes/index.js';
 
 
 const app = express();
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json());
 
 async function usersTest() {
     // Create 2 users
@@ -168,17 +168,16 @@ async function comprehensiveTest() {
     await testCase(userData.addFollower, user4._id, user2._id);
 }
 
-// Connect to the database and reset it before starting the server
+
 async function startServer() {
     try {
+        // Connect to the database and reset it before starting the server
         const db = await dbConnection();
-        await db.dropDatabase(); // Reset the database
+        await db.dropDatabase(); 
         
         app.use(express.static("public"));
-        // Configure routes after the database is ready
         configRoutesFunction(app);
 
-        // Start the server
         app.listen(3000, () => {
             console.log("We've now got a server!");
             console.log('Your routes will be running on http://localhost:3000');
@@ -192,8 +191,6 @@ async function startServer() {
         console.error('Error starting the server:', error);
     }
 }
-
-// Call the function to start the server
 startServer();
 
 

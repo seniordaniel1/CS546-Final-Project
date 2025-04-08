@@ -142,10 +142,10 @@ const exportedMethods = {
 
         // Generate a salt
         const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
+        const salt = await bcrypt.genSalt(saltRounds);
 
         // Hash the password using the generated salt
-        const hashedPassword = bcrypt.hashSync(password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
         return hashedPassword;
     },
     addFollower: async (userIdFollowing, userIdFollower) => {
