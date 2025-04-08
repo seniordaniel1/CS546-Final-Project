@@ -7,7 +7,6 @@ router.get("/:id", async (req, res) => {
     try {
         // Validating that input is a valid user 
         const comment = await commentData.getCommentById(req.params.id);
-        console.log("Current comment: ", comment);
         return res.render('getCommentById', { title: `${comment._id}`, comment: comment });
     } catch (e) {
         return res.status(404).render('404', { title: "404 Error: Comment Not found", message: "Comment not found" })
