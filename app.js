@@ -122,31 +122,75 @@ async function likeTest() {
     console.log(await postData.getAllPosts());
 }
 
-// Connect to the database and reset it before starting the server
+async function comprehensiveTest() {
+    // Create users
+    const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101");
+    const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan");
+    const user3 = await testCase(userData.createUser, "Clark", "Kent", "clarkkent@dailyplanet.com", "clarkkent", 35, "Superman123");
+    const user4 = await testCase(userData.createUser, "Diana", "Prince", "dianaprince@themyscira.com", "dianaprince", 30, "WonderWoman456");
+
+    // Create posts for user1
+    const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!");
+    const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!");
+
+    // Create posts for user2
+    const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
+
+    // Create posts for user3
+    const post5 = await testCase(postData.createPost, user3._id, "I can fly!");
+    const post6 = await testCase(postData.createPost, user3._id, "Truth, Justice, and the American Way!");
+
+    // Create posts for user4
+    const post7 = await testCase(postData.createPost, user4._id, "I am the goddess of war!");
+    const post8 = await testCase(postData.createPost, user4._id, "For Themyscira!");
+
+    // Create comments
+    const comment1 = await testCase(commentData.createComment, post1._id, user2._id, "We all knew this!");
+    const comment2 = await testCase(commentData.createComment, post1._id, user3._id, "Who would have thought!");
+    const comment3 = await testCase(commentData.createComment, post3._id, user1._id, "You are the Batman!");
+    const comment4 = await testCase(commentData.createComment, post5._id, user4._id, "That's amazing!");
+    const comment5 = await testCase(commentData.createComment, post7._id, user1._id, "You inspire me!");
+
+    // Add likes
+    await postData.addLike(post1._id, user1._id);
+    await postData.addLike(post2._id, user2._id);
+    await postData.addLike(post3._id, user3._id);
+    await postData.addLike(post4._id, user4._id);
+    await postData.addDislike(post1._id, user2._id);
+    await postData.addDislike(post3._id, user1._id);
+
+    // Follow relationships
+    await testCase(userData.addFollower, user1._id, user2._id);
+    await testCase(userData.addFollower, user1._id, user3._id);
+    await testCase(userData.addFollower, user2._id, user4._id);
+    await testCase(userData.addFollower, user3._id, user1._id);
+    await testCase(userData.addFollower, user4._id, user2._id);
+}
+
+
 async function startServer() {
     try {
+        // Connect to the database and reset it before starting the server
         const db = await dbConnection();
-        await db.dropDatabase(); // Reset the database
+        await db.dropDatabase(); 
         
         app.use(express.static("public"));
-        // Configure routes after the database is ready
         configRoutesFunction(app);
 
-        // Start the server
         app.listen(3000, () => {
             console.log("We've now got a server!");
             console.log('Your routes will be running on http://localhost:3000');
         });
 
         // await deletePostTest();
-        await followersTest();
+        // await followersTest();
+        await comprehensiveTest();
 
     } catch (error) {
         console.error('Error starting the server:', error);
     }
 }
-
-// Call the function to start the server
 startServer();
 
 
