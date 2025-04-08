@@ -173,7 +173,8 @@ async function startServer() {
     try {
         const db = await dbConnection();
         await db.dropDatabase(); // Reset the database
-
+        
+        app.use(express.static("public"));
         // Configure routes after the database is ready
         configRoutesFunction(app);
 
