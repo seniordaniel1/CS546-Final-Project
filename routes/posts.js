@@ -79,7 +79,6 @@ router.get("/:id", async (req, res) => {
 
         const likes = await getUserJsonsFromUserIds(post.likes, "getPostById-userLikes");
         const dislikes = await getUserJsonsFromUserIds(post.dislikes, "getPostById-userLikes");
-        console.log("Likes: ", likes);
         return res.render('getPostById', {
             title: "Insert post title here",
             post: post,
