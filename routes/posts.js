@@ -57,7 +57,15 @@ router.get('/user/:id', async (req, res) => {
 
         // Get all posts made by user 
         const posts = await postData.getPostsByUserId(userId);
-        return res.json(posts);
+        const user = await userData.getUserById(userId);
+        const comments = await commentData.getCommentsByUserId(userId);
+        return res.render('getPostsByUserId', {
+            title: "Posts by user",
+            posts: posts,
+            user: user,
+            comments: comments
+        });
+        // return res.json(posts);
     } catch (error) {
         // If user doesnt exist, throw 404 error 
         if (error.message === "No user with that id") {

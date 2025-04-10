@@ -2,18 +2,32 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #000000;
+  background-color: #1f1f1f;
 }
 
 header {
-  background-color: #000000;
+  background-color: #1f1f1f;
   color: white;
   padding: 1rem 0;
   text-align: center;
+  text-decoration: none;
 }
 h1 {
   color: white;
 }
+
+.mini-blog {
+  font-size: 50px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+header h1.mini-blog a:link, /* Unvisited link */
+header h1.mini-blog a:visited { /* Visited link */
+  color: #ffffff; /* Ensure the color stays white */
+  text-decoration: none; /* Remove underline */
+}
+
 
 nav {
   margin: 1rem 0;
@@ -36,7 +50,7 @@ main {
 }
 
 footer {
-  background-color: #000000;
+  background-color: #1f1f1f;
   color: white;
   text-align: center;
   padding: 1rem 0;
@@ -52,4 +66,10 @@ footer {
   border-radius: 5px;
   background-color: #f9f9f9;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.card {
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px;
 }
