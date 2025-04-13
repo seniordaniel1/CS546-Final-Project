@@ -63,6 +63,9 @@ const constructorMethod = (app) => {
             return res.redirect('/register');
         }
 
+        // Email needs to be case-insensitive
+        const lowercaseEmail = email.toLowerCase();
+
         // Check if username & email already in use 
         try {
             let existingUser;
@@ -77,7 +80,7 @@ const constructorMethod = (app) => {
                 return res.redirect('/register');
             }
 
-            try { existingEmail = await userData.getUserByEmail(email); }
+            try { existingEmail = await userData.getUserByEmail(lowercaseEmail); }
             catch (error) { existingEmail = null }
             if (existingEmail) {
                 req.flash('error', 'Error creating user: Email already in use');
@@ -90,7 +93,7 @@ const constructorMethod = (app) => {
 
         // Create the new user
         try {
-            await userData.createUser(firstName, lastName, email, username, age, password);
+            await userData.createUser(firstName, lastName, lowercaseEmail, username, age, password);
             res.redirect('/login');
         } catch (error) {
             req.flash('error', 'Error creating user: ' + error.message);
