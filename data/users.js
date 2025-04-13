@@ -25,6 +25,7 @@ const exportedMethods = {
         await validateName(lastName, "createUser-lastName");
         
         // Validate if email input is a valid email
+        email = email.toLowerCase();
         await validateEmail(email, 'createUser-emailAddress')
         
         // Validate if username are valid inputs
