@@ -51,7 +51,7 @@ const constructorMethod = (app) => {
     });
 
     app.get('/register', (req, res) => {
-        res.render('register', { title: 'Register' });
+        res.render('register', { title: 'Register', error: req.flash('error') });
     });
 
     app.post('/register', async (req, res) => {
@@ -59,27 +59,42 @@ const constructorMethod = (app) => {
 
         // Validate input
         if (!firstName || !lastName || !email || !username || !age || !password) {
-            return res.status(400).render('400', { error: 'Inputs invalid' });
+            req.flash('error', 'Inputs invalid');
+            return res.redirect('/register');
         }
 
         // Check if username & email already in use 
         try {
-            const existingUser = await userData.getUserByUsername(username);
+            let existingUser;
+            let existingEmail;
+            try {
+                existingUser = await userData.getUserByUsername(username);
+            } catch (error) {
+                existingUser = null
+            }
             if (existingUser) {
-                return res.status(400).render('register', { error: 'Username already in use' });
+                req.flash('error', 'Error creating user: Username already in use');
+                return res.redirect('/register');
             }
-            const existingEmail = await userData.getUserByEmail(email);
+
+            try { existingEmail = await userData.getUserByEmail(email); }
+            catch (error) { existingEmail = null }
             if (existingEmail) {
-                return res.status(400).render('register', { error: 'Email already in use' });
+                req.flash('error', 'Error creating user: Email already in use');
+                return res.redirect('/register');
             }
-        } catch (error) { }
+        } catch (error) {
+            req.flash('error', 'Error creating user: ' + error.message);
+            return res.redirect('/register');
+        }
 
         // Create the new user
         try {
             await userData.createUser(firstName, lastName, email, username, age, password);
             res.redirect('/login');
         } catch (error) {
-            return res.status(500).render('register', { error: 'Error creating user: ' + error.message });
+            req.flash('error', 'Error creating user: ' + error.message);
+            return res.redirect('/register');
         }
     });
 

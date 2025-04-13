@@ -31,11 +31,12 @@ const exportedMethods = {
         await validateUsername(username, "createdUser-username")
 
         // Validate is age is a valid input
+        age = Number(age)
         await validateAge(age, "createUser-validateAge");
         
         // Hash the password
         const hashedPassword = await exportedMethods.hashPassword(password);
-        
+
         // Set the following inputs to empty array:
             // * followers
             // * following
