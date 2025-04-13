@@ -3,7 +3,8 @@ import postRoutes from './posts.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
 import passport from 'passport';
-import { userData } from '../data/index.js'; 
+import flash from 'connect-flash'; 
+import { userData } from '../data/index.js';
 import "../config/passport-config.js";
 
 const app = express();
@@ -35,28 +36,29 @@ const constructorMethod = (app) => {
     app.set('view engine', 'handlebars');
 
     
-    app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+    app.use(session({ secret: 'some_random_key', resave: false, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash());
 
     // Public routes -- Render home, login, and register pages
     app.get('/', (req, res) => {
-        res.render('home', { title: 'Home' }); 
+        res.render('home', { title: 'Home' });
     });
 
     app.get('/login', (req, res) => {
-        res.render('login', { title: 'Login' }); 
+        res.render('login', { title: 'Login', error: req.flash('error') });
     });
 
     app.get('/register', (req, res) => {
-        res.render('register', { title: 'Register' }); 
+        res.render('register', { title: 'Register' });
     });
 
     app.post('/register', async (req, res) => {
         const { firstName, lastName, email, username, age, password } = req.body;
 
         // Validate input
-        if (!firstName, !lastName, !email, !username, !age, !password) {
+        if (!firstName || !lastName || !email || !username || !age || !password) {
             return res.status(400).render('400', { error: 'Inputs invalid' });
         }
 
@@ -81,15 +83,30 @@ const constructorMethod = (app) => {
         }
     });
 
-    app.post('/login', passport.authenticate('local', {
-        successRedirect: '/users', 
-        failureRedirect: '/login', 
-    }));
-    
+    app.post('/login', (req, res, next) => {
+        passport.authenticate('local', (err, user, info) => {
+            if (err) {
+                return next(err); 
+            }
+            if (!user) {
+                req.flash('error', 'Invalid username or password.');
+                return res.redirect('/login'); 
+            }
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err); 
+                }
+                return res.redirect('/users');
+            });
+        })(req, res, next);
+    });
+
+
+
     app.get('/logout', (req, res) => {
         req.logout((err) => {
             if (err) {
-                return res.status(500).render('error', { error: 'Error logging out' }); 
+                return res.status(500).render('error', { error: 'Error logging out' });
             }
             res.redirect('/');
         });
