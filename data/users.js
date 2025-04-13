@@ -31,11 +31,12 @@ const exportedMethods = {
         await validateUsername(username, "createdUser-username")
 
         // Validate is age is a valid input
+        age = Number(age)
         await validateAge(age, "createUser-validateAge");
         
         // Hash the password
         const hashedPassword = await exportedMethods.hashPassword(password);
-        
+
         // Set the following inputs to empty array:
             // * followers
             // * following
@@ -188,7 +189,41 @@ const exportedMethods = {
         const userCollection = await users();
         await updateUniqueElementInList(userCollection, userIdFollowing, 'remove', 'following', userIdFollower, 'removeFollower');
         await updateUniqueElementInList(userCollection, userIdFollower, 'remove', 'followers', userIdFollowing, 'removeFollower');
-    }
+    },
+    getUserByUsername: async (username) => {
+        // Validate input 
+        await checkInputsExistence([username]);
+        await checkNumArguments([username], 1, "getUserByUsername");
+        await isStr(username, "getUserByUsername-userNameStr");
+
+        // Get all users and find user by username
+        const userCollection = await users();
+        const user = await userCollection.findOne({ username: username }); 
+
+        // If user is not found, throw an error 
+        if (user === null) throw new Error(`No user with the username: ${username}`);
+
+        // Convert user id to string and return user object
+        user._id = user._id.toString();
+        return user;
+    },
+    getUserByEmail: async (email) => {
+        // Validate input 
+        await checkInputsExistence([email]);
+        await checkNumArguments([email], 1, "getUserByEmail");
+        await isStr(email, "getUserByUsername-userNameStr");
+
+        // Get all users and find user by username
+        const userCollection = await users();
+        const user = await userCollection.findOne({ email: email }); 
+
+        // If user is not found, throw an error 
+        if (user === null) throw new Error(`No user with the username: ${username}`);
+
+        // Convert user id to string and return user object
+        user._id = user._id.toString();
+        return user;
+    },
 }
 
 export default exportedMethods;
