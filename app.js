@@ -36,6 +36,22 @@ app.use('/register', (req, res, next) => {
     }
 });
 
+app.use('/logout', (req, res, next) => {
+    if (!req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+});
+
+app.use('/create-post', (req, res, next) => {
+    if (!req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+});
+
 
 async function comprehensiveTest() {
     // Create users

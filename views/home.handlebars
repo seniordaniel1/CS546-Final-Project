@@ -1,1 +1,45 @@
-{{title}}
+<div id="post-feed">
+    <!-- Posts will be dynamically loaded here -->
+</div>
+
+<script>
+    // Fetch posts from the server and display them
+    async function fetchPosts() {
+        try {
+            const response = await fetch('/posts'); // API endpoint to get all posts
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+
+            const posts = await response.json();
+
+
+
+            const postFeed = document.getElementById('post-feed');
+
+            // Clear the feed before appending posts
+            postFeed.innerHTML = '';
+
+            // Loop through posts and add them to the feed
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+
+
+                postElement.innerHTML = `
+                <h2><a href="/posts/${post._id}">${post.userId}</a></h2>
+                <p>${post.content}</p>
+            `;
+                postFeed.appendChild(postElement);
+            });
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+            const postFeed = document.getElementById('post-feed');
+            postFeed.innerHTML = '<p>Failed to load posts. Please try again later.</p>';
+        }
+    }
+
+    // Call fetchPosts when the page loads
+    window.onload = fetchPosts;
+</script>

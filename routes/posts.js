@@ -3,42 +3,44 @@ import express from 'express';
 import { addUserJsonToInput, getUserJsonsFromUserIds } from '../helpers.js';
 const router = express.Router();
 
-// // * Create a new post
-// router.post("/", async (req, res) => {
-//     try {
-//         // pd = postData
-//         const pd = req.body;
-//         const userId = pd.userId;
-//         const content = pd.content;
-//         const imageUrl = pd.imageUrl;
 
-//         // Validate input data -- Must do it here as it will throw an error otherwise
-//         if ((!imageUrl && imageUrl !== null) || !userId || !content) {
-//             return res.status(400).json({ error: "All fields except imageUrl are required. If nothing is set for imageUrl, it must be set to null." });
-//         }
+router.post("/", async (req, res) => {
 
-//         // Validate that the userId is valid 
-//         await userData.getUserById(userId);
+    try {
 
-//         // Create the post
-//         const newPost = await postData.createPost(userId, content, imageUrl);
 
-//         return res.json(newPost);
-//     } catch (error) {
-//         return res.status(400).json({ error: `User cannot be created: ${error}` });
-//     }
-// });
+        let { text, imageUrl } = req.body;
+        const userId = req.session.user.id;
+
+        if (imageUrl.trim() === "") {
+            imageUrl = null;
+        }
+
+        if (!text || !userId) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+
+        const newPost = await postData.createPost(userId, text, imageUrl);
+
+        res.status(201).json(newPost);
+
+    } catch (e) {
+
+        return res.status(500).json({ error: e });
+    }
+});
 
 // * Get all posts
 router.get("/", async (req, res) => {
+
     try {
         const postList = await postData.getAllPosts();
-        return res.render('getAllPosts', {
-            title: "All Posts",
-            posts: postList
-        });
-        //return res.json(postList);
+        return res.status(200).json(postList);
     } catch (e) {
+
+
+
         // Something went wrong with the server!
         return res.status(400).send();
     }
@@ -59,6 +61,7 @@ router.get('/user/:id', async (req, res) => {
         const posts = await postData.getPostsByUserId(userId);
         return res.json(posts);
     } catch (error) {
+
         // If user doesnt exist, throw 404 error 
         if (error.message === "No user with that id") {
             return res.status(404).json({ message: "User not found!" });
