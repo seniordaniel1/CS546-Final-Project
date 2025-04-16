@@ -4,7 +4,7 @@
 <div class="error">{{error}}</div>
 {{/if}}
 
-<form id="register-form">
+<form action="/register" method="POST">
     <div>
         <label for="firstName">First Name:</label>
         <input type="text" id="firstName" name="firstName" required>
@@ -33,40 +33,3 @@
 </form>
 
 <p>Already have an account? <a href="/login">Login here</a></p>
-
-<script>
-    document.getElementById('register-form').addEventListener('submit', async function (event) {
-        event.preventDefault(); // Prevent default form submission
-
-        const formData = {
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            email: document.getElementById('email').value,
-            username: document.getElementById('username').value,
-            age: document.getElementById('age').value,
-            password: document.getElementById('password').value,
-        };
-
-        try {
-            const response = await fetch('/users/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Registration successful!');
-                window.location.href = '/login'; // Redirect to login page
-            } else {
-                alert(result.error || 'Registration failed. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
-        }
-    });
-</script>
