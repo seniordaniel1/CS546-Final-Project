@@ -286,7 +286,7 @@ export async function validateEmail(emailAdress, emailAddressStr) {
     await isStr(emailAdress, emailAddressStr);
 
 
-    isValid = EmailValidator.validate(emailAdress); // true
+    const isValid = EmailValidator.validate(emailAdress); // true
 
     if (isValid)
         return true;
