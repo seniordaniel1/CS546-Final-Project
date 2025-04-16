@@ -10,6 +10,7 @@ import { ObjectId } from 'mongodb';
 export async function checkInputsExistence(args) {
     for (let i = 0; i < args.length; i++) {
         const currArg = args[i]
+
         if (typeof currArg !== 'boolean') {
             if (!currArg)
                 throw new Error("Inputs must exist")
@@ -273,7 +274,7 @@ export async function validateEmail(emailAdress, emailAddressStr) {
 export async function validateAge(age, ageStr) {
     await checkNumArgs(arguments.length, 2);
     await checkInputsExistence(Array.from(arguments));
-    
+
     await isStr(ageStr, 'validateAgeStr');
     await isNum(age, ageStr);
 
@@ -295,7 +296,7 @@ export async function validateUsername(username, usernameStr) {
 
     // Get all users and check if username is unique
     const users = await userData.getAllUsers();
-    for (let i = 0; i < users.length; i++){
+    for (let i = 0; i < users.length; i++) {
         const currUser = users[i];
         if (username === currUser.username) {
             throw new Error(`Username: ${username} already in use!`);
@@ -336,7 +337,7 @@ export async function validateListUserIds(userIds, listName) {
 
     // Loop through all user ids, if all user ids are valid nothing happens 
     // If user id is invalid, it throws an error 
-    for (let i = 0; i < userIds.length; i++){
+    for (let i = 0; i < userIds.length; i++) {
         const currUser = userIds[i];
         await userData.getUserById(currUser._id);
     }
@@ -385,7 +386,7 @@ export async function updateUniqueElementInList(collection, documentId, action, 
     if (action === 'add') {
         updateOperation = { $addToSet: { [arrayField]: value } };
     } else if (action === 'remove') {
-        updateOperation = { $pull: { [arrayField]: value } }; 
+        updateOperation = { $pull: { [arrayField]: value } };
     } else {
         throw new Error("Invalid action. Use 'add' or 'remove'.");
     }
@@ -396,10 +397,10 @@ export async function updateUniqueElementInList(collection, documentId, action, 
         { returnDocument: 'after' }
     );
 
-    return result; 
+    return result;
 }
 
-export async function removeElementFromAllDocuments(collection, arrayField, value, functionName){
+export async function removeElementFromAllDocuments(collection, arrayField, value, functionName) {
     // Validate inputs 
     await checkInputsExistence(Array.from(arguments));
     await checkNumArgs(arguments.length, 4);
@@ -409,11 +410,11 @@ export async function removeElementFromAllDocuments(collection, arrayField, valu
     // ? Should Input value always be a string? 
 
     // Remove all instances of value from all arrayField in all documents
-    const updateOperation = { $pull: { [arrayField]: value } }; 
+    const updateOperation = { $pull: { [arrayField]: value } };
     collection.updateMany(
-        {}, 
+        {},
         updateOperation
-     );
+    );
 }
 
 /**
@@ -433,7 +434,7 @@ export async function addUserJsonToInput(inputJsons, functionName) {
         const inputJson = inputJsons[i];
         const userId = inputJson.userId;
         if (userId !== undefined) {
-            const userJson = await userData.getUserById(userId); 
+            const userJson = await userData.getUserById(userId);
             inputJson.user = userJson;
         }
     }
@@ -461,9 +462,9 @@ export async function getUserJsonsFromUserIds(userIds, functionName) {
         if (userId !== undefined) {
             const userJson = await userData.getUserById(userId);
             if (userJson) {
-                userJsons.push(userJson); 
+                userJsons.push(userJson);
             }
         }
     }
-    return userJsons; 
+    return userJsons;
 }

@@ -8,6 +8,7 @@ const exportedMethods = {
     createUser: async (firstName, lastName, email, username, age, password) => {
         // Validate the number of inputs and ensure that each input exists
         const currArgs = [firstName, lastName, email, username, age, password];
+
         await checkNumArguments(currArgs, 6, 'createUser');
         await checkInputsExistence(currArgs);
 
@@ -23,26 +24,26 @@ const exportedMethods = {
         // Validate if firstName and lastName are valid names
         await validateName(firstName, "createUser-firstName");
         await validateName(lastName, "createUser-lastName");
-        
+
         // Validate if email input is a valid email
         email = email.toLowerCase();
         await validateEmail(email, 'createUser-emailAddress')
-        
+
         // Validate if username are valid inputs
         await validateUsername(username, "createdUser-username")
 
         // Validate is age is a valid input
         age = Number(age)
         await validateAge(age, "createUser-validateAge");
-        
+
         // Hash the password
         const hashedPassword = await exportedMethods.hashPassword(password);
 
         // Set the following inputs to empty array:
-            // * followers
-            // * following
-            // * posts
-            // * comments
+        // * followers
+        // * following
+        // * posts
+        // * comments
         const followers = [], following = [], posts = [], comments = [];
 
         // Create new user object 
@@ -64,7 +65,8 @@ const exportedMethods = {
         const insertInfo = await userCollection.insertOne(newUser);
         if (!insertInfo.acknowledged || !insertInfo.insertedId)
             throw new Error('Could not add user');
-        
+
+
         // Get ID and return user by getUserById
         const newId = insertInfo.insertedId.toString();
         const currUser = await exportedMethods.getUserById(newId);
@@ -107,7 +109,7 @@ const exportedMethods = {
         await validateIdAndReturnTrimmedId(userId);
 
         const currMovie = await exportedMethods.getUserById(userId);
-        
+
         // Delete all posts that the user created
         await postData.removePostsByUserId(userId);
 
@@ -148,6 +150,7 @@ const exportedMethods = {
 
         // Hash the password using the generated salt
         const hashedPassword = await bcrypt.hash(password, salt);
+
         return hashedPassword;
     },
     addFollower: async (userIdFollowing, userIdFollower) => {
@@ -161,16 +164,16 @@ const exportedMethods = {
         await exportedMethods.getUserById(userIdFollower);
 
         const userCollection = await users();
-        
+
         // Add to following list 
         const addToFollowingList = await updateUniqueElementInList(userCollection, userIdFollowing, 'add', 'following', userIdFollower, "addFollower");
-        
+
         // Add to follower list
         const addToFollowerList = await updateUniqueElementInList(userCollection, userIdFollower, 'add', 'followers', userIdFollowing, "addFollower");
 
         if (!addToFollowingList || !addToFollowerList)
             throw new Error("Could not add follower")
-        
+
         return {
             userFollowing: addToFollowingList,
             userFollowed: addToFollowerList
@@ -192,14 +195,14 @@ const exportedMethods = {
         await updateUniqueElementInList(userCollection, userIdFollower, 'remove', 'followers', userIdFollowing, 'removeFollower');
     },
     getUserByUsername: async (username) => {
-        // Validate input 
+        // Validate input x
         await checkInputsExistence([username]);
         await checkNumArguments([username], 1, "getUserByUsername");
         await isStr(username, "getUserByUsername-userNameStr");
 
         // Get all users and find user by username
         const userCollection = await users();
-        const user = await userCollection.findOne({ username: username }); 
+        const user = await userCollection.findOne({ username: username });
 
         // If user is not found, throw an error 
         if (user === null) throw new Error(`No user with the username: ${username}`);
@@ -216,7 +219,7 @@ const exportedMethods = {
 
         // Get all users and find user by username
         const userCollection = await users();
-        const user = await userCollection.findOne({ email: email }); 
+        const user = await userCollection.findOne({ email: email });
 
         // If user is not found, throw an error 
         if (user === null) throw new Error(`No user with the username: ${username}`);
@@ -224,6 +227,21 @@ const exportedMethods = {
         // Convert user id to string and return user object
         user._id = user._id.toString();
         return user;
+    },
+    checkPassword: async (password, hashedPassword) => {
+        // Validate inputs 
+        await checkNumArguments([password, hashedPassword], 2, "checkPassword")
+        await checkInputsExistence([password, hashedPassword]);
+        await isStr(password, "checkPassword-password");
+        await isStr(hashedPassword, "checkPassword-hashedPassword");
+
+        // Check if password matches the hashed password
+
+        const match = await bcrypt.compare(password, hashedPassword);
+
+
+
+        return match;
     },
 }
 
