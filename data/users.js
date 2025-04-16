@@ -36,6 +36,8 @@ const exportedMethods = {
         age = Number(age)
         await validateAge(age, "createUser-validateAge");
 
+        password = validatePassword(password, "createUser-password");
+
         // Hash the password
         const hashedPassword = await exportedMethods.hashPassword(password);
 

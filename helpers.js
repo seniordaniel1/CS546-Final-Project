@@ -1,6 +1,7 @@
+import { startSession } from "mongoose";
 import { userData } from "./data/index.js"
 import { ObjectId } from 'mongodb';
-
+import * as EmailValidator from 'email-validator';
 
 /**
  * Given a list of arguments, check if all arguments exist
@@ -53,6 +54,29 @@ export async function isStr(str, str_name) {
 
     throw new Error(`${str_name} input must be a non-empty string`)
 }
+
+
+export async function strMaxLength(str, maxLen, str_name) {
+    isStr(str, str_name)
+
+    if (startSession.length > maxLen) {
+        throw new Error(`${str_name} string length must be less than ${maxLen}`);
+    }
+
+    return;
+}
+
+export async function isSingleWord(str, str_name) {
+    isStr(str, str_name)
+
+    if (str.trim().split(' ').length > 1) {
+        throw new Error(`${str_name} input must be a single word`);
+    }
+
+    return;
+
+}
+
 
 /**
  * Given an input, check if it is a valid number
@@ -245,6 +269,8 @@ export async function validateName(name, nameStr) {
 
     // Check that the name is alphabetic
     await isAlphabetic(name, nameStr);
+    await isSingleWord(name, nameStr);
+    await strMaxLength(name, 20, nameStr);
 }
 
 /**
@@ -259,12 +285,17 @@ export async function validateEmail(emailAdress, emailAddressStr) {
     await isStr(emailAddressStr, `emailAddressStr invalid`)
     await isStr(emailAdress, emailAddressStr);
 
-    let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (emailAdress.match(regex))
+
+    isValid = EmailValidator.validate(emailAdress); // true
+
+    if (isValid)
         return true;
     else
         throw new Error(`${emailAddressStr} is not a valid email address`)
+
 }
+
+
 
 /**
  * Validate if age input is valid
@@ -293,6 +324,7 @@ export async function validateUsername(username, usernameStr) {
     await checkInputsExistence(Array.from(arguments));
     await isStr(usernameStr, 'validateUsernameStr');
     await isStr(username, usernameStr);
+    await strMaxLength(username, 20, usernameStr);
 
     // Get all users and check if username is unique
     const users = await userData.getAllUsers();
@@ -302,6 +334,22 @@ export async function validateUsername(username, usernameStr) {
             throw new Error(`Username: ${username} already in use!`);
         }
     }
+}
+
+/**
+ * Validate if password input is valid
+ * @param {String} password Password input
+ * @param {String} passwordStr Source of password input 
+ */
+export async function validatePassword(password, passwordStr) {
+    // Validate inputs 
+    await checkNumArgs(arguments.length, 2);
+    await checkInputsExistence(Array.from(arguments));
+    await isStr(passwordStr, 'validatePasswordStr');
+    await isStr(password, passwordStr);
+    await strMaxLength(password, 20, passwordStr);
+
+
 }
 
 /**
