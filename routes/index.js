@@ -86,8 +86,8 @@ const constructorMethod = (app) => {
 
 
     // Protected routes
-    app.use('/posts', postRoutes);
-    app.use('/users', userRoutes);
+    app.use('/posts', ensureAuthenticated, postRoutes);
+    app.use('/users', ensureAuthenticated, userRoutes);
 
     // Handle 404 errors
     app.use('*', (req, res) => {
