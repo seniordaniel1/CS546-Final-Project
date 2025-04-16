@@ -25,7 +25,7 @@ const handlebarsInstance = exphbs.create({
 });
 
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (req.session.user) {
         return next();
     }
     res.redirect('/login');
@@ -45,7 +45,9 @@ const constructorMethod = (app) => {
 
     // Public routes -- Render home, login, and register pages
     app.get('/', (req, res) => {
-        res.render('home', { title: 'Home' });
+
+        const user = req.session.user || null;
+        res.render('home', { title: 'Home', user: user });
     });
 
     app.get('/login', (req, res) => {
@@ -56,10 +58,13 @@ const constructorMethod = (app) => {
         res.render('register', { title: 'Register', error: req.flash('error') });
     });
 
+    app.get('/create-post', ensureAuthenticated, (req, res) => {
+        res.render('createPost', { title: 'Create Post' });
+    });
+
 
     // Protected routes
-    app.use('/posts', ensureAuthenticated, postRoutes);
-
+    app.use('/posts', postRoutes);
     app.use('/users', userRoutes);
 
     // Handle 404 errors

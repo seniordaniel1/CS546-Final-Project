@@ -1,0 +1,45 @@
+<h1>Create a New Post</h1>
+<form id="create-post-form">
+    <div>
+        <label for="text">Post Text:</label>
+        <textarea id="text" name="text" required></textarea>
+    </div>
+    <div>
+        <label for="imageUrl">Image URL (optional):</label>
+        <input type="url" id="imageUrl" name="imageUrl">
+    </div>
+    <button type="submit">Create Post</button>
+</form>
+
+<div id="message"></div> <!-- For success or error messages -->
+
+<script>
+    document.getElementById('create-post-form').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const text = document.getElementById('text').value;
+        const imageUrl = document.getElementById('imageUrl').value;
+
+        try {
+            const response = await fetch('/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text, imageUrl }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('message').innerHTML = '<p>Post created successfully!</p>';
+                document.getElementById('create-post-form').reset(); // Clear the form
+            } else {
+                document.getElementById('message').innerHTML = `<p>Error: ${result.error || 'Failed to create post'}</p>`;
+            }
+        } catch (error) {
+            console.error('Error creating post:', error);
+            document.getElementById('message').innerHTML = '<p>An error occurred. Please try again later.</p>';
+        }
+    });
+</script>
