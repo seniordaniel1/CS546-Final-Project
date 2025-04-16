@@ -57,17 +57,6 @@ const constructorMethod = (app) => {
     });
 
 
-
-
-    app.get('/logout', (req, res) => {
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).render('error', { error: 'Error logging out' });
-            }
-            res.redirect('/');
-        });
-    });
-
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
 
