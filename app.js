@@ -2,10 +2,39 @@ import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import { userData, postData, commentData } from "./data/index.js";
 import express from 'express';
 import configRoutesFunction from './routes/index.js';
+import Session from "express-session";
 
 
 const app = express();
 app.use(express.json());
+
+app.use(Session({
+    name: "MiniBlog",
+    secret: "SecretVal23",
+    resave: false,
+    cookie:
+    {
+        maxAge: 60000,
+    },
+
+}));
+
+
+app.use('/login', (req, res, next) => {
+    if (req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+});
+
+app.use('/register', (req, res, next) => {
+    if (req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+});
 
 async function usersTest() {
     // Create 2 users
@@ -26,19 +55,19 @@ async function deleteUserTest() {
 
     postData.addLike(post2._id, user2._id);
 
-    const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
-    const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
+    const comment1 = await testCase(commentData.createComment, post1._id, user2._id, "We all knew this!");
+    const comment2 = await testCase(commentData.createComment, post1._id, user1._id, "Who would have thought!");
     console.log("All users before user deletion:\n", await userData.getAllUsers());
     console.log("All posts before user deletion:\n", await postData.getAllPosts());
-    console.log("All Comments before user deletion:\n",await commentData.getAllComments());
+    console.log("All Comments before user deletion:\n", await commentData.getAllComments());
 
     await testCase(userData.removeUser, user2._id);
     console.log("All users after user deletion:\n", await userData.getAllUsers());
     console.log("All posts after user deletion:\n", await postData.getAllPosts());
-    console.log("All comments after user deletion:\n",await commentData.getAllComments());
+    console.log("All comments after user deletion:\n", await commentData.getAllComments());
 }
 
-async function deletePostTest(){
+async function deletePostTest() {
     // Create a post by an existing user
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
@@ -48,9 +77,9 @@ async function deletePostTest(){
     const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
     const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
 
-    const comment1 = await testCase(commentData.createComment,post1._id, user2._id, "We all knew this!");
-    const comment2 = await testCase(commentData.createComment,post1._id, user1._id, "Who would have thought!");
-    
+    const comment1 = await testCase(commentData.createComment, post1._id, user2._id, "We all knew this!");
+    const comment2 = await testCase(commentData.createComment, post1._id, user1._id, "Who would have thought!");
+
     // console.log("All users before user deletion:\n", await userData.getAllUsers());
     // console.log("All posts before user deletion:\n", await postData.getAllPosts());
     // console.log("All Comments before user deletion:\n",await commentData.getAllComments());
@@ -64,7 +93,7 @@ async function deletePostTest(){
 async function deleteCommentTest() {
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!")
-    
+
     const comment1 = await testCase(commentData.createComment, post1._id, user1._id, "I've joined the Avengers!");
     console.log("Get Comment by ID: ", comment1);
     console.log("Before deleting comment")
@@ -79,7 +108,7 @@ async function deleteCommentTest() {
     console.log("Get all comments: ", await commentData.getAllComments());
 }
 
-async function followersTest(){
+async function followersTest() {
     // Create 2 users 
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
     const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan")
@@ -173,8 +202,8 @@ async function startServer() {
     try {
         // Connect to the database and reset it before starting the server
         const db = await dbConnection();
-        await db.dropDatabase(); 
-        
+        await db.dropDatabase();
+
         app.use(express.static("public"));
         configRoutesFunction(app);
 

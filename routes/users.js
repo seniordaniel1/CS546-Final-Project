@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
     try {
         // Validating that input is a valid user 
         const user = await userData.getUserById(req.params.id);
-        
+
         // Get all posts that user has made
         const posts = await postData.getPostsByUserId(user._id);
         // Get all comments that user has made 
@@ -41,6 +41,91 @@ router.get("/", async (req, res) => {
         return res.status(400).send();
     }
 });
+
+
+router.post("/login", async (req, res) => {
+
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        const user = await userData.getUserByUsername(username);
+        if (!user) {
+            return res.status(401).json({ error: "Invalid username or password." });
+        }
+
+
+        const isPasswordValid = await userData.checkPassword(password, user.password);
+        if (!isPasswordValid) {
+            console.log("Invalid password");
+            return res.status(401).json({ error: "Invalid username or password." });
+        }
+
+        req.session.user = {
+            id: user._id.toString(),
+        }; // Store user in session
+
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ error: `Login failed: ${error}` });
+    }
+});
+
+router.post("/create", async (req, res) => {
+    try {
+        const { firstName, lastName, email, username, age, password } = req.body;
+
+        if (!firstName || !lastName || !email || !username || !age || !password) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        let existingUser;
+        let existingEmail;
+        try {
+            existingUser = await userData.getUserByUsername(username);
+        } catch (error) {
+            existingUser = null
+        }
+        if (existingUser) {
+            throw (new Error('Error creating user: Username already in use'));
+        }
+
+        try { existingEmail = await userData.getUserByEmail(lowercaseEmail); }
+        catch (error) { existingEmail = null }
+        if (existingEmail) {
+            throw (new Error('Error creating user: Email already in use'));
+        }
+
+
+        const lowercaseEmail = email.toLowerCase();
+
+
+        const newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            email: lowercaseEmail,
+            username: username,
+            age: age,
+            password: password,
+            followers: [],
+            following: [],
+            posts: [],
+            comments: []
+        }
+
+        const createdUser = await userData.createUser(newUser.firstName, newUser.lastName, newUser.email, newUser.username, newUser.age, newUser.password);
+
+        return res.status(201).json(createdUser);
+    } catch (error) {
+        return res.status(500).json({ error: `User cannot be created: ${error}` });
+    }
+});
+
+
+
 
 // // * Create a new user 
 // router.post("/new", async (req, res) => {
@@ -92,7 +177,7 @@ export default router
 //     try {
 //         // Make sure that user exists
 //         await userData.getUserById(req.params.id);
-        
+
 //         // Get user Id  
 //         const userId = req.params.id;  
 //         const user = await userData.removeUser(userId);
