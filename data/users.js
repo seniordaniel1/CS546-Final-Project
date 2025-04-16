@@ -1,5 +1,5 @@
 import { users, posts } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds, updateUniqueElementInList, removeElementFromAllDocuments } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, validateAge, validateEmail, validateName, validateUsername, validateIdAndReturnTrimmedId, trimArguments, validateListUserIds, updateUniqueElementInList, removeElementFromAllDocuments, validatePassword } from "../helpers.js";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 import { postData, commentData } from "./index.js";
@@ -36,7 +36,7 @@ const exportedMethods = {
         age = Number(age)
         await validateAge(age, "createUser-validateAge");
 
-        password = validatePassword(password, "createUser-password");
+        await validatePassword(password, "createUser-password");
 
         // Hash the password
         const hashedPassword = await exportedMethods.hashPassword(password);
