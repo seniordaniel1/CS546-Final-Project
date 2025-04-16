@@ -59,7 +59,15 @@ const constructorMethod = (app) => {
     });
 
     app.get('/create-post', ensureAuthenticated, (req, res) => {
-        res.render('createPost', { title: 'Create Post' });
+
+        const user = req.session.user || null;
+        res.render('createPost', { title: 'Create Post', user: user });
+    });
+
+    app.get('/logout', (req, res) => {
+
+        const user = req.session.user || null;
+        res.render('logout', { title: 'Logout', user: user });
     });
 
 

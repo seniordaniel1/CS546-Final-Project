@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Optional: Add your CSS file -->
+</head>
+
+<body>
+    <h1>Are you sure you want to log out?</h1>
+    <button id="confirm-logout">Yes, Logout</button>
+    <button id="cancel-logout">Cancel</button>
+
+    <script>
+        document.getElementById('confirm-logout').addEventListener('click', async function () {
+            try {
+                const response = await fetch('/users/logout', { method: 'POST' });
+                if (response.ok) {
+                    window.location.href = '/'; // Redirect to the homepage after logout
+                } else {
+                    alert('Failed to log out. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        });
+
+        document.getElementById('cancel-logout').addEventListener('click', function () {
+            window.location.href = '/'; // Redirect back to the homepage or previous page
+        });
+    </script>
+</body>
+
+</html>
