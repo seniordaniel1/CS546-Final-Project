@@ -71,6 +71,20 @@ const constructorMethod = (app) => {
     });
 
 
+    app.get('/about', (req, res) => {
+
+        const user = req.session.user || null;
+        res.render('about', { title: 'About', user: user });
+    });
+
+
+    app.get('/contact', (req, res) => {
+
+        const user = req.session.user || null;
+        res.render('contact', { title: 'Contact Us', user: user });
+    });
+
+
     // Protected routes
     app.use('/posts', postRoutes);
     app.use('/users', userRoutes);
