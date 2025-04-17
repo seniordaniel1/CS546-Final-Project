@@ -55,7 +55,6 @@ const exportedMethods = {
             email: email,
             username: username,
             age: age,
-            lowercaseUsername: username.toLowerCase(),
             password: hashedPassword,
             followers: followers,
             following: following,
@@ -205,7 +204,7 @@ const exportedMethods = {
 
         // Get all users and find user by username
         const userCollection = await users();
-        const user = await userCollection.findOne({ lowercaseUsername: username.toLowerCase() });
+        const user = await userCollection.findOne({ username: username });
 
         // If user is not found, throw an error 
         if (user === null) throw new Error(`No user with the username: ${username}`);
