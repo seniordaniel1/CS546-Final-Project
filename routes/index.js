@@ -133,7 +133,13 @@ const constructorMethod = (app) => {
 
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
-    app.use('/users', ensureAuthenticated, userRoutes)
+    app.use('/users', ensureAuthenticated, userRoutes);
+    
+    // ? For demo purposes only
+    // app.use('/profile', ensureAuthenticated, (req, res) => {
+    //     const user = req.user;
+    //     return res.json(user);
+    // })
 
     // Handle 404 errors
     app.use('*', (req, res) => {
