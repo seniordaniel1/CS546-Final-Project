@@ -1,5 +1,6 @@
 import express from 'express';
 import postRoutes from './posts.js';
+import userRoutes from './users.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
 import passport from 'passport';
@@ -132,6 +133,7 @@ const constructorMethod = (app) => {
 
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
+    app.use('/users', ensureAuthenticated, userRoutes)
 
     // Handle 404 errors
     app.use('*', (req, res) => {
