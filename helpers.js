@@ -1,6 +1,6 @@
 import { userData } from "./data/index.js"
 import { ObjectId } from 'mongodb';
-
+import * as EmailValidator from 'email-validator';
 
 /**
  * Given a list of arguments, check if all arguments exist
@@ -247,7 +247,7 @@ export async function validateName(name, nameStr) {
 }
 
 /**
- * Validates if input is a valid email address
+ * Validates if input is a valid email  address
  * @param {String} emailAdress Email input
  * @returns Boolean if input is an email
  * @reference https://regexr.com/3e48o
@@ -258,8 +258,9 @@ export async function validateEmail(emailAdress, emailAddressStr) {
     await isStr(emailAddressStr, `emailAddressStr invalid`)
     await isStr(emailAdress, emailAddressStr);
 
-    let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (emailAdress.match(regex))
+    const isValid = EmailValidator.validate(emailAdress); // true
+
+    if (isValid)
         return true;
     else
         throw new Error(`${emailAddressStr} is not a valid email address`)
