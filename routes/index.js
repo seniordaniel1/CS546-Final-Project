@@ -143,6 +143,10 @@ const constructorMethod = (app) => {
         res.render('about');
     })
 
+    app.get('/contact', (req, res) => {
+        res.render('contact');
+    })
+
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
     app.use('/users', ensureAuthenticated, userRoutes);
