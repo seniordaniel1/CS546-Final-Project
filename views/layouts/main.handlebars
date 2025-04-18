@@ -20,7 +20,11 @@
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/contact">Contact</a>
+        {{#if user}}
+        <a href="/users/logout">Logout</a>
+        {{else}}
         <a href="/login">Login</a>
+        {{/if}}
     </nav>
     <main>
         {{{body}}}

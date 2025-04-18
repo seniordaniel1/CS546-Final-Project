@@ -52,6 +52,12 @@ const constructorMethod = (app) => {
     app.use(passport.session());
     app.use(flash());
 
+    // https://expressjs.com/en/api.html#res.locals
+    app.use(function (req, res, next) {
+        res.locals.user = req.user
+        next()
+    })
+
     // Public routes -- Render home, login, and register pages
     app.get('/', async (req, res) => {
         const posts = await postData.getAllPosts();
