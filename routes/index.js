@@ -130,8 +130,6 @@ const constructorMethod = (app) => {
         })(req, res, next);
     });
 
-
-
     app.get('/logout', (req, res) => {
         req.logout((err) => {
             if (err) {
@@ -140,6 +138,10 @@ const constructorMethod = (app) => {
             res.redirect('/');
         });
     });
+
+    app.get('/about', (req, res) => {
+        res.render('about');
+    })
 
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
