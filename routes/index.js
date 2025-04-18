@@ -55,9 +55,8 @@ const constructorMethod = (app) => {
     // Public routes -- Render home, login, and register pages
     app.get('/', async (req, res) => {
         const posts = await postData.getAllPosts();
-        // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
-        
         // Sort posts by most recent
+        // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
         posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         res.render('home', { title: 'Home', posts: posts });
     });
@@ -137,7 +136,7 @@ const constructorMethod = (app) => {
                 if (err) {
                     return next(err); 
                 }
-                return res.redirect('/users');
+                return res.redirect(`/users/${user._id}`);
             });
         })(req, res, next);
     });
