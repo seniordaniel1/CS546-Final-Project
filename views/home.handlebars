@@ -1,1 +1,7 @@
 {{title}}
+{{#each posts}}
+    <article class="post">
+        <h2><a href="/posts/{{_id}}">{{userId}}</a></h2>
+        <p>{{content}}</p>
+    </article>
+{{/each}}

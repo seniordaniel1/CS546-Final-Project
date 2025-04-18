@@ -7,7 +7,7 @@ import passport from 'passport';
 import session from 'express-session';
 // https://peeyushjss.medium.com/guide-to-send-flash-messages-using-nodejs-b4f83d4b0bd7
 import flash from 'connect-flash'; 
-import { userData } from '../data/index.js';
+import { userData, postData } from '../data/index.js';
 import "../config/passport-config.js";
 // https://www.npmjs.com/package/express-xss-sanitizer
 // https://blog.devops.dev/secure-your-nodejs-applications-with-express-xss-sanitizer-prevent-xss-attacks-effortlessly-e0f3d8a967fc
@@ -53,8 +53,15 @@ const constructorMethod = (app) => {
     app.use(flash());
 
     // Public routes -- Render home, login, and register pages
-    app.get('/', (req, res) => {
-        res.render('home', { title: 'Home' });
+    app.get('/', async (req, res) => {
+        const posts = await postData.getAllPosts();
+        // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
+        
+        // Sort posts by most recent
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        console.log(posts);
+        res.render('home', { title: 'Home', posts: posts });
     });
 
     app.get('/login', (req, res) => {
@@ -152,10 +159,10 @@ const constructorMethod = (app) => {
     app.use('/users', ensureAuthenticated, userRoutes);
     
     // ? For demo purposes only
-    // app.use('/profile', ensureAuthenticated, (req, res) => {
-    //     const user = req.user;
-    //     return res.json(user);
-    // })
+    app.use('/profile', ensureAuthenticated, (req, res) => {
+        const user = req.user;
+        return res.json(user);
+    })
 
     // Handle 404 errors
     app.use('*', (req, res) => {
