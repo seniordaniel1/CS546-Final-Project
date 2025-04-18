@@ -2,14 +2,23 @@ import express from 'express';
 import postRoutes from './posts.js';
 import userRoutes from './users.js';
 import exphbs from 'express-handlebars';
-import session from 'express-session';
+// https://github.com/jwalton/passport-api-docs?tab=readme-ov-file#passportsessionoptions
 import passport from 'passport';
+import session from 'express-session';
+// https://peeyushjss.medium.com/guide-to-send-flash-messages-using-nodejs-b4f83d4b0bd7
 import flash from 'connect-flash'; 
 import { userData } from '../data/index.js';
 import "../config/passport-config.js";
+// https://www.npmjs.com/package/express-xss-sanitizer
+import { xss } from 'express-xss-sanitizer';
+import bodyParser from 'body-parser';
 
 const app = express();
 const staticDir = express.static('public');
+
+app.use(bodyParser.json({limit:'1kb'}));
+app.use(bodyParser.urlencoded({extended: true, limit:'1kb'}));
+app.use(xss());
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
