@@ -47,23 +47,22 @@ router.get("/", async (req, res) => {
     }
 });
 
-// // * Create a new user 
-// router.post("/new", async (req, res) => {
-//     try {
-//         // upd = userPostData
-//         const upd = req.body;
+router.post('/createPost', async (req, res) => {
+    const user = req.user; 
+    const { content, imageUrl } = req.body;
 
-//         // Validate input data -- Must do it here as it will throw an error otherwise
-//         if (!upd.firstName || !upd.lastName || !upd.email || !upd.age || !upd.password) {
-//             return res.status(400).json({ error: "All fields are required." });
-//         }
+    if (!content) {
+        return res.status(500).render('error', { title: "500 Error", message: "Unable to create new post" });
+    }
 
-//         const newUser = await userData.createUser(upd.firstName, upd.lastName, upd.email, upd.email, upd.age, upd.password);
-//         return res.json(newUser);
-//     } catch (error) {
-//         return res.status(400).json({ error: `User cannot be created: ${error}` });
-//     }
-// });
+    try {
+        const createdPost = await postData.createPost(user._id, content, imageUrl); 
+        res.json(createdPost); 
+    } catch (error) {
+        console.error('Error creating post:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 // * Print all followers by userId
 router.get("/:id/followers", async (req, res) => {

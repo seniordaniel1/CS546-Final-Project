@@ -58,7 +58,8 @@ const constructorMethod = (app) => {
         // Sort posts by most recent
         // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
         posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        res.render('home', { title: 'Home', posts: posts });
+        const user = req.user;
+        res.render('home', { title: 'Home', posts: posts, user: user });
     });
 
     app.get('/login', (req, res) => {
@@ -141,15 +142,6 @@ const constructorMethod = (app) => {
         })(req, res, next);
     });
 
-    // app.get('/logout', (req, res) => {
-    //     req.logout((err) => {
-    //         if (err) {
-    //             return res.status(500).render('error', { error: 'Error logging out' });
-    //         }
-    //         res.redirect('/');
-    //     });
-    // });
-
     app.get('/about', (req, res) => {
         res.render('about');
     })
@@ -163,10 +155,10 @@ const constructorMethod = (app) => {
     app.use('/users', ensureAuthenticated, userRoutes);
     
     // ? For demo purposes only
-    app.use('/profile', ensureAuthenticated, (req, res) => {
-        const user = req.user;
-        return res.json(user);
-    })
+    // app.use('/profile', ensureAuthenticated, (req, res) => {
+    //     const user = req.user;
+    //     return res.json(user);
+    // })
 
     // Handle 404 errors
     app.use('*', (req, res) => {

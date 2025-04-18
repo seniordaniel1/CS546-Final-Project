@@ -1,7 +1,18 @@
-{{title}}
+<h1>{{title}}</h1>
+
+{{#if user}}
+<form id="newPostForm">
+    <textarea name="content" placeholder="Write your post here..." required></textarea>
+    <button type="submit">Post</button>
+</form>
+{{/if}}
+
 {{#each posts}}
-    <article class="post">
-        <h2><a href="/posts/{{_id}}">{{userId}}</a></h2>
-        <p>{{content}}</p>
-    </article>
+<article class="post">
+    <h2><a href="/posts/{{_id}}">{{userId}}</a></h2>
+    <p>{{content}}</p>
+</article>
 {{/each}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/createPost.js"></script>
