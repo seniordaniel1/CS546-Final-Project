@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
         const comments = await commentData.getCommentsByUserId(user._id);
         return res.render('getUserById', { user: user, title: `${user._id}`, posts: posts, comments: comments });
     } catch (e) {
-        return res.status(404).render('404', { title: "404 Error: User Not found", message: "User not found" })
+        return res.status(404).render('error', { title: "404 Error: User Not found", message: "User not found" })
     }
 });
 

@@ -59,8 +59,6 @@ const constructorMethod = (app) => {
         
         // Sort posts by most recent
         posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        
-        console.log(posts);
         res.render('home', { title: 'Home', posts: posts });
     });
 
@@ -119,7 +117,7 @@ const constructorMethod = (app) => {
         }
     });
 
-    app.post('/login', (req, res, next) => {
+    app.post('/login', async (req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
             if (err) {
                 return next(err); 
@@ -166,7 +164,7 @@ const constructorMethod = (app) => {
 
     // Handle 404 errors
     app.use('*', (req, res) => {
-        return res.status(404).render('404', { title: "404 Error: Page Not found", message: "Page not found" });
+        return res.status(404).render('error', { title: "404 Error: Page Not found", message: "Page not found" });
     });
 };
 

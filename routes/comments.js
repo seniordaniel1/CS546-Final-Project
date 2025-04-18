@@ -9,7 +9,7 @@ router.get("/:id", async (req, res) => {
         const comment = await commentData.getCommentById(req.params.id);
         return res.render('getCommentById', { title: `${comment._id}`, comment: comment });
     } catch (e) {
-        return res.status(404).render('404', { title: "404 Error: Comment Not found", message: "Comment not found" })
+        return res.status(404).render('error', { title: "404 Error: Comment Not found", message: "Comment not found" })
     }
 });
 

@@ -87,7 +87,7 @@ router.get("/:id", async (req, res) => {
             dislikes: dislikes
         })
     } catch (e) {
-        return res.status(404).render('404', { title: "404 Error: Post Not found", message: "Post not found" + e })
+        return res.status(404).render('error', { title: "404 Error: Post Not found", message: "Post not found" + e })
     }
 });
 
