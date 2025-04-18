@@ -10,6 +10,7 @@ import flash from 'connect-flash';
 import { userData } from '../data/index.js';
 import "../config/passport-config.js";
 // https://www.npmjs.com/package/express-xss-sanitizer
+// https://blog.devops.dev/secure-your-nodejs-applications-with-express-xss-sanitizer-prevent-xss-attacks-effortlessly-e0f3d8a967fc
 import { xss } from 'express-xss-sanitizer';
 import bodyParser from 'body-parser';
 
