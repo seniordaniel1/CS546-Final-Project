@@ -126,7 +126,7 @@ async function likeTest() {
     console.log(await postData.getAllPosts());
 }
 
-async function comprehensiveTest() {
+async function dummyData() {
     // Create users
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101");
     const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan");
@@ -192,7 +192,7 @@ async function startServer() {
 
         // await deletePostTest();
         // await followersTest();
-        await comprehensiveTest();
+        await dummyData();
 
     } catch (error) {
         console.error('Error starting the server:', error);
