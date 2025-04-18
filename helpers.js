@@ -250,7 +250,7 @@ export async function validateName(name, nameStr) {
  * Validates if input is a valid email  address
  * @param {String} emailAdress Email input
  * @returns Boolean if input is an email
- * @reference https://regexr.com/3e48o
+ * @reference https://www.npmjs.com/package/email-validator
  */
 export async function validateEmail(emailAdress, emailAddressStr) {
     await checkNumArgs(arguments.length, 2);
