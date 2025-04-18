@@ -63,7 +63,14 @@ const constructorMethod = (app) => {
     });
 
     app.get('/login', (req, res) => {
-        res.render('login', { title: 'Login', error: req.flash('error') });
+        // If you are not logged in 
+        if (!req.user) {
+            return res.render('login', { title: 'Login', error: req.flash('error') });
+        }
+
+        // If you are already logged in: 
+        const user = req.user;
+        return res.redirect(`/users/${user._id}`);
     });
 
     app.get('/register', (req, res) => {
@@ -135,14 +142,14 @@ const constructorMethod = (app) => {
         })(req, res, next);
     });
 
-    app.get('/logout', (req, res) => {
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).render('error', { error: 'Error logging out' });
-            }
-            res.redirect('/');
-        });
-    });
+    // app.get('/logout', (req, res) => {
+    //     req.logout((err) => {
+    //         if (err) {
+    //             return res.status(500).render('error', { error: 'Error logging out' });
+    //         }
+    //         res.redirect('/');
+    //     });
+    // });
 
     app.get('/about', (req, res) => {
         res.render('about');

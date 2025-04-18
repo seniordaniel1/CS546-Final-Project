@@ -3,14 +3,19 @@ import { getUserJsonsFromUserIds } from '../helpers.js';
 import express from 'express';
 const router = express.Router();
 
-// // * Page to create a new user 
-// router.get('/new', async (req, res) => {
-//     try {
-//         return res.render('newUser', { title: "New User" })
-//     } catch (error) {
-//         return res.render("400 Error: User creation failed", {message: `Error: ${error}`})
-//     }
-// })
+// * Logout 
+router.get("/logout", async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).render('error', { error: 'Error logging out' });
+            }
+            return res.redirect('/');
+        });
+    } catch (error) {
+        return res.status(500).render('error', { error: 'Error logging out' });
+    }
+});
 
 // * Get user by ID
 router.get("/:id", async (req, res) => {
