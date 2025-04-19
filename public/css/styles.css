@@ -28,18 +28,20 @@ nav a:hover {
 }
 
 main {
-  padding: 2rem;
-  text-align: center;
+    text-align: center;
+    padding-bottom: 60px;
+    padding: 20px;
 }
 
+/* https: //www.w3schools.com/howto/tryit.asp?filename=tryhow_css_fixed_footer */
 footer {
-  background-color: #000000;
-  color: white;
-  text-align: center;
-  padding: 1rem 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: black;
+   color: white;
+   text-align: center;
 }
 
 .post {
