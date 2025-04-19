@@ -76,15 +76,18 @@ router.get("/:id", async (req, res) => {
 
         const tmpComments = await commentData.getCommentsByPostId(post._id);
         const comments = await addUserJsonToInput(tmpComments, "getPostById-comments");
+        comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         const likes = await getUserJsonsFromUserIds(post.likes, "getPostById-userLikes");
         const dislikes = await getUserJsonsFromUserIds(post.dislikes, "getPostById-userLikes");
+        const likeScore = likes.length - dislikes.length
         return res.render('getPostById', {
             title: "Insert post title here",
             post: post,
             comments: comments,
             likes: likes,
-            dislikes: dislikes
+            dislikes: dislikes,
+            likeScore: likeScore
         })
     } catch (e) {
         return res.status(404).render('error', { title: "404 Error: Post Not found", message: "Post not found" + e })
