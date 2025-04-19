@@ -1,5 +1,5 @@
 import { posts, users } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr, updateUniqueElementInList } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, validateIdAndReturnTrimmedId, trimArguments, getTodayDate, isStr, updateUniqueElementInList, strMaxLength } from "../helpers.js";
 import { userData, commentData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
@@ -19,6 +19,8 @@ const exportedMethods = {
 
         await isStr(userId, "createPost-userId");
         await isStr(content, "createPost-content");
+
+        strMaxLength(content, 200, "createPost-content")
 
         await userData.getUserById(userId);
 

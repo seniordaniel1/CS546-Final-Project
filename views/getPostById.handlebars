@@ -1,17 +1,20 @@
-<h1>Content: {{post.content}}</h1>
+<h1>{{post.content}}</h1>
 {{post.imageUrl}}
-<h2>Created by: {{post.user.username}}</h2>
+<h2>Created by: <a href="/users/{{post.user._id}}">{{post.user.username}}</a></h2>
 <h2>Created at: {{post.timestamp}}</h2>
 
 <h2>Like Score: {{likeScore}}</h2>
 <h2>Likes: <a href="/posts/{{post._id}}/likes">{{likes.length}}</a></h2>
 <h2>Dislikes: <a href="/posts/{{post._id}}/dislikes">{{dislikes.length}}</a></h2>
+<button id="likeButton" class="like-dislike-button">Like</button>
+<button id="dislikeButton" class="like-dislike-button">Dislike</button>
 
 <h2>Comments</h2>
 
 {{#if user}}
 <form id="newCommentForm">
-    <textarea name="content" placeholder="Write your comment here..." required></textarea>
+    {{!-- https://www.geeksforgeeks.org/html-textareamaxlength-attribute/ --}}
+    <textarea name="content" placeholder="Write your comment here..." maxlength="200" required ></textarea>
     <button type="submit">Post</button>
 </form>
 {{/if}}
@@ -29,4 +32,4 @@
 {{/each}}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/createComment.js"></script>
+<script src="/js/getPostById.js"></script>
