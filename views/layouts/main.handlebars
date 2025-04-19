@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <header>
+    {{!-- <header>
         <h1>Mini Blog</h1>
     </header>
     <nav>
@@ -25,7 +25,17 @@
         {{else}}
         <a href="/login">Login</a>
         {{/if}}
-    </nav>
+    </nav> --}}
+    <div class="topnav">
+        <a href="/">MiniBlog</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        {{#if user}}
+        <a href="/users/logout">Logout</a>
+        {{else}}
+        <a href="/login">Login</a>
+        {{/if}}
+    </div>
     <main>
         {{{body}}}
     </main>
