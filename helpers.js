@@ -1,6 +1,6 @@
 import { userData } from "./data/index.js"
 import { ObjectId } from 'mongodb';
-
+import * as EmailValidator from 'email-validator';
 
 /**
  * Given a list of arguments, check if all arguments exist
@@ -195,11 +195,7 @@ async function isAlphabetic(str, str_name) {
         const char = str[i];
         const ascii_char = char.charCodeAt(0);
         if (!(ascii_char >= 65 && ascii_char <= 90) && !(ascii_char >= 97 && ascii_char <= 122) && (ascii_char != 32)) {
-            throw new Error(`${str_name} must consist of letters only:
-            String: '${str}'
-            Letter Value: '${char}'
-            ASCII Value: '${ascii_char}'
-            `);
+            throw new Error(`${str_name} must consist of letters only`);
         }
     }
 };
@@ -244,22 +240,38 @@ export async function validateName(name, nameStr) {
 
     // Check that the name is alphabetic
     await isAlphabetic(name, nameStr);
+    // Name must have no spaces
+    await isSingleWord(name, nameStr);
+    // Name must be liimited to 20 characters or less
+    await strMaxLength(name, 20, nameStr);
 }
 
 /**
- * Validates if input is a valid email address
+ * Validates if input is a valid email  address
  * @param {String} emailAdress Email input
  * @returns Boolean if input is an email
- * @reference https://regexr.com/3e48o
+ * @reference https://www.npmjs.com/package/email-validator
  */
 export async function validateEmail(emailAdress, emailAddressStr) {
     await checkNumArgs(arguments.length, 2);
     await checkInputsExistence(Array.from(arguments));
     await isStr(emailAddressStr, `emailAddressStr invalid`)
     await isStr(emailAdress, emailAddressStr);
+    
+    // Check if email address is valid
+    emailAdress = emailAdress.toLowerCase();
+    const isValid = EmailValidator.validate(emailAdress); 
 
-    let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (emailAdress.match(regex))
+    // Get all users and check if email is unique
+    const users = await userData.getAllUsers();
+    for (let i = 0; i < users.length; i++) {
+        const currUser = users[i];
+        if (emailAdress === currUser.email) {
+            throw new Error(`Email Address: ${emailAdress} already in use!`);
+        }
+    }
+
+    if (isValid)
         return true;
     else
         throw new Error(`${emailAddressStr} is not a valid email address`)
@@ -292,6 +304,7 @@ export async function validateUsername(username, usernameStr) {
     await checkInputsExistence(Array.from(arguments));
     await isStr(usernameStr, 'validateUsernameStr');
     await isStr(username, usernameStr);
+    await strMaxLength(username, 20, usernameStr);
 
     // Get all users and check if username is unique
     const users = await userData.getAllUsers();
@@ -466,4 +479,62 @@ export async function getUserJsonsFromUserIds(userIds, functionName) {
         }
     }
     return userJsons; 
+}
+
+/**
+ * Checks if length of striing is less than maxLen input
+ * @param {String} str String input
+ * @param {Number} maxLen Max length of input 
+ * @param {String} str_name Name of string input 
+ * @returns Nothing if string input is valid, throw an error if not 
+ */
+export async function strMaxLength(str, maxLen, str_name) {
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 3);
+    await isStr(str_name, "strMaxLength-strName")
+    await isStr(str, str_name)
+    await isNum(maxLen, "strMaxLength-maxLen")
+
+    if (str.length > maxLen) {
+        throw new Error(`${str_name} string length must be less than ${maxLen}`);
+    }
+    return;
+}
+
+/**
+ * Checks if input is a single word -- Has no spaces in string
+ * @param {String} str String input
+ * @param {String} str_name Name of string input
+ * @returns Nothing if string input is valid, throw an error if not
+ */
+export async function isSingleWord(str, str_name) {
+    await checkInputsExistence(Array.from(arguments));
+    await checkNumArgs(arguments.length, 2);
+    await isStr(str_name, "isSingleWord-strName")
+    await isStr(str, str_name)
+
+    if (str.trim().split(' ').length > 1) {
+        throw new Error(`${str_name} input doesnt allow for spaces`);
+    }
+    
+    return;
+}
+
+/**
+ * Checks if password input is valid 
+ * @param {String} password Password input string 
+ * @param {String} passwordStr Name of password input 
+ */
+export async function validatePassword(password, passwordStr) {
+    await checkNumArgs(arguments.length, 2);
+    await checkInputsExistence(Array.from(arguments));
+
+    // Check that password is a non-empty string
+    await isStr(passwordStr, "validatePasswordStr");
+    await isStr(password, passwordStr);
+
+    // Name must have no spaces
+    await isSingleWord(password, passwordStr);
+    // Name must be liimited to 20 characters or less
+    await strMaxLength(password, 20, passwordStr);
 }

@@ -1,14 +1,25 @@
 import express from 'express';
 import postRoutes from './posts.js';
+import userRoutes from './users.js';
 import exphbs from 'express-handlebars';
-import session from 'express-session';
+// https://github.com/jwalton/passport-api-docs?tab=readme-ov-file#passportsessionoptions
 import passport from 'passport';
+import session from 'express-session';
+// https://peeyushjss.medium.com/guide-to-send-flash-messages-using-nodejs-b4f83d4b0bd7
 import flash from 'connect-flash'; 
-import { userData } from '../data/index.js';
+import { userData, postData } from '../data/index.js';
 import "../config/passport-config.js";
+// https://www.npmjs.com/package/express-xss-sanitizer
+// https://blog.devops.dev/secure-your-nodejs-applications-with-express-xss-sanitizer-prevent-xss-attacks-effortlessly-e0f3d8a967fc
+import { xss } from 'express-xss-sanitizer';
+import bodyParser from 'body-parser';
 
 const app = express();
 const staticDir = express.static('public');
+
+app.use(bodyParser.json({limit:'1kb'}));
+app.use(bodyParser.urlencoded({extended: true, limit:'1kb'}));
+app.use(xss());
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
@@ -41,13 +52,31 @@ const constructorMethod = (app) => {
     app.use(passport.session());
     app.use(flash());
 
+    // https://expressjs.com/en/api.html#res.locals
+    app.use(function (req, res, next) {
+        res.locals.user = req.user
+        next()
+    })
+
     // Public routes -- Render home, login, and register pages
-    app.get('/', (req, res) => {
-        res.render('home', { title: 'Home' });
+    app.get('/', async (req, res) => {
+        const posts = await postData.getAllPosts();
+        // Sort posts by most recent
+        // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const user = req.user;
+        res.render('home', { title: 'Home', posts: posts, user: user });
     });
 
     app.get('/login', (req, res) => {
-        res.render('login', { title: 'Login', error: req.flash('error') });
+        // If you are not logged in 
+        if (!req.user) {
+            return res.render('login', { title: 'Login', error: req.flash('error') });
+        }
+
+        // If you are already logged in: 
+        const user = req.user;
+        return res.redirect(`/users/${user._id}`);
     });
 
     app.get('/register', (req, res) => {
@@ -101,7 +130,7 @@ const constructorMethod = (app) => {
         }
     });
 
-    app.post('/login', (req, res, next) => {
+    app.post('/login', async (req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
             if (err) {
                 return next(err); 
@@ -114,28 +143,32 @@ const constructorMethod = (app) => {
                 if (err) {
                     return next(err); 
                 }
-                return res.redirect('/users');
+                return res.redirect(`/users/${user._id}`);
             });
         })(req, res, next);
     });
 
+    app.get('/about', (req, res) => {
+        res.render('about');
+    })
 
-
-    app.get('/logout', (req, res) => {
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).render('error', { error: 'Error logging out' });
-            }
-            res.redirect('/');
-        });
-    });
+    app.get('/contact', (req, res) => {
+        res.render('contact');
+    })
 
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
+    app.use('/users', ensureAuthenticated, userRoutes);
+    
+    // ? For demo purposes only
+    // app.use('/profile', ensureAuthenticated, (req, res) => {
+    //     const user = req.user;
+    //     return res.json(user);
+    // })
 
     // Handle 404 errors
     app.use('*', (req, res) => {
-        return res.status(404).render('404', { title: "404 Error: Page Not found", message: "Page not found" });
+        return res.status(404).render('error', { title: "404 Error: Page Not found", message: "Page not found" });
     });
 };
 

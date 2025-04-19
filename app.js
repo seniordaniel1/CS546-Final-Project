@@ -7,6 +7,10 @@ import configRoutesFunction from './routes/index.js';
 const app = express();
 app.use(express.json());
 
+async function wait() {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+}
+
 async function usersTest() {
     // Create 2 users
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101")
@@ -122,7 +126,7 @@ async function likeTest() {
     console.log(await postData.getAllPosts());
 }
 
-async function comprehensiveTest() {
+async function dummyData() {
     // Create users
     const user1 = await testCase(userData.createUser, "Tony", "Stark", "tstark@stark.com", "tonystark", 44, "IronMan101");
     const user2 = await testCase(userData.createUser, "Bruce", "Wayne", "brucewayne@wayne.com", "brucewayne", 52, "BruceTheMan");
@@ -131,10 +135,13 @@ async function comprehensiveTest() {
 
     // Create posts for user1
     const post1 = await testCase(postData.createPost, user1._id, "I am Iron Man!");
+    await wait()
     const post2 = await testCase(postData.createPost, user1._id, "I've created an infinite source of energy!!");
 
     // Create posts for user2
+    await wait()
     const post3 = await testCase(postData.createPost, user2._id, "I am not the Batman!");
+    await wait()
     const post4 = await testCase(postData.createPost, user2._id, "Hello, world!");
 
     // Create posts for user3
@@ -185,7 +192,7 @@ async function startServer() {
 
         // await deletePostTest();
         // await followersTest();
-        await comprehensiveTest();
+        await dummyData();
 
     } catch (error) {
         console.error('Error starting the server:', error);

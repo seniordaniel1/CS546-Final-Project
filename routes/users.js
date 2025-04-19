@@ -3,14 +3,19 @@ import { getUserJsonsFromUserIds } from '../helpers.js';
 import express from 'express';
 const router = express.Router();
 
-// // * Page to create a new user 
-// router.get('/new', async (req, res) => {
-//     try {
-//         return res.render('newUser', { title: "New User" })
-//     } catch (error) {
-//         return res.render("400 Error: User creation failed", {message: `Error: ${error}`})
-//     }
-// })
+// * Logout 
+router.get("/logout", async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).render('error', { error: 'Error logging out' });
+            }
+            return res.redirect('/');
+        });
+    } catch (error) {
+        return res.status(500).render('error', { error: 'Error logging out' });
+    }
+});
 
 // * Get user by ID
 router.get("/:id", async (req, res) => {
@@ -24,7 +29,7 @@ router.get("/:id", async (req, res) => {
         const comments = await commentData.getCommentsByUserId(user._id);
         return res.render('getUserById', { user: user, title: `${user._id}`, posts: posts, comments: comments });
     } catch (e) {
-        return res.status(404).render('404', { title: "404 Error: User Not found", message: "User not found" })
+        return res.status(404).render('error', { title: "404 Error: User Not found", message: "User not found" })
     }
 });
 
@@ -42,23 +47,38 @@ router.get("/", async (req, res) => {
     }
 });
 
-// // * Create a new user 
-// router.post("/new", async (req, res) => {
-//     try {
-//         // upd = userPostData
-//         const upd = req.body;
+// * Create a post 
+router.post('/createPost', async (req, res) => {
+    try {
+        const user = req.user;
+        const { content, imageUrl } = req.body;
 
-//         // Validate input data -- Must do it here as it will throw an error otherwise
-//         if (!upd.firstName || !upd.lastName || !upd.email || !upd.age || !upd.password) {
-//             return res.status(400).json({ error: "All fields are required." });
-//         }
+        if (!content) {
+            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new post" });
+        }
+        const createdPost = await postData.createPost(user._id, content, imageUrl); 
+        res.json(createdPost); 
+    } catch (error) {
+        console.error('Error creating post:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
-//         const newUser = await userData.createUser(upd.firstName, upd.lastName, upd.email, upd.email, upd.age, upd.password);
-//         return res.json(newUser);
-//     } catch (error) {
-//         return res.status(400).json({ error: `User cannot be created: ${error}` });
-//     }
-// });
+// * Create a comment 
+router.post('/createComment', async(req, res) => {
+    try {
+        const user = req.user;
+        const { content, postId } = req.body;
+        if (!content) {
+            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new comment" });
+        }
+        const newComment = await commentData.createComment(postId, user._id, content);
+        newComment['user'] = user;
+        return res.json(newComment);
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
 // * Print all followers by userId
 router.get("/:id/followers", async (req, res) => {

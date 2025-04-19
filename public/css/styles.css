@@ -5,41 +5,50 @@ body {
   background-color: #ffffff;
 }
 
-header {
-  background-color: #000000;
-  color: white;
-  padding: 1rem 0;
-  text-align: center;
+/* https: //www.w3schools.com/howto/tryit.asp?filename=tryhow_css_navbar_border */
+.topnav {
+    overflow: hidden;
+    background-color: #f1f1f1;
 }
 
-nav {
-  margin: 1rem 0;
-  text-align: center;
+.topnav a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    border-bottom: 3px solid transparent;
 }
 
-nav a {
-  margin: 0 1rem;
-  text-decoration: none;
-  color: black;
+.topnav a:hover {
+    border-bottom: 3px solid red;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.topnav a.active {
+    border-bottom: 3px solid red;
 }
 
 main {
-  padding: 2rem;
-  text-align: center;
+    text-align: center;
+    padding-bottom: 5%;
+    padding: 20px;
 }
 
+/* https: //stackoverflow.com/questions/46383096/how-to-align-text-at-the-center-of-a-footer-in-css#46383162 */
 footer {
-  background-color: #000000;
-  color: white;
-  text-align: center;
-  padding: 1rem 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background-color: #f1f1f1;
+    text-align: center;
+    background-size: 100% 100%;
+    justify-content: center;
+}
+
+footer p {
+    color: black;
 }
 
 .post {
@@ -49,4 +58,8 @@ footer {
   border-radius: 5px;
   background-color: #f9f9f9;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.support-list{
+  font-weight: bold;
 }

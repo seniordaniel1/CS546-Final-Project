@@ -8,6 +8,14 @@
 <h2>Dislikes: <a href="/posts/{{post._id}}/dislikes">{{dislikes.length}}</a></h2>
 
 <h2>Comments</h2>
+
+{{#if user}}
+<form id="newCommentForm">
+    <textarea name="content" placeholder="Write your comment here..." required></textarea>
+    <button type="submit">Post</button>
+</form>
+{{/if}}
+
 {{#each comments}}
 <ul>
     <li>
@@ -19,3 +27,6 @@
     </li>
 </ul>
 {{/each}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/createComment.js"></script>
