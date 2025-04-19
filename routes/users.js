@@ -47,15 +47,15 @@ router.get("/", async (req, res) => {
     }
 });
 
+// * Create a post 
 router.post('/createPost', async (req, res) => {
-    const user = req.user; 
-    const { content, imageUrl } = req.body;
-
-    if (!content) {
-        return res.status(500).render('error', { title: "500 Error", message: "Unable to create new post" });
-    }
-
     try {
+        const user = req.user;
+        const { content, imageUrl } = req.body;
+
+        if (!content) {
+            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new post" });
+        }
         const createdPost = await postData.createPost(user._id, content, imageUrl); 
         res.json(createdPost); 
     } catch (error) {
@@ -63,6 +63,22 @@ router.post('/createPost', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+// * Create a comment 
+router.post('/createComment', async(req, res) => {
+    try {
+        const user = req.user;
+        const { content, postId } = req.body;
+        if (!content) {
+            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new comment" });
+        }
+        const newComment = await commentData.createComment(postId, user._id, content);
+        newComment['user'] = user;
+        return res.json(newComment);
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
 // * Print all followers by userId
 router.get("/:id/followers", async (req, res) => {
