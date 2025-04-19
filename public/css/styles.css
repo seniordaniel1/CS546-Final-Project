@@ -29,7 +29,7 @@ nav a:hover {
 
 main {
     text-align: center;
-    padding-bottom: 60px;
+    padding-bottom: 5%;
     padding: 20px;
 }
 
@@ -42,6 +42,8 @@ footer {
    background-color: black;
    color: white;
    text-align: center;
+   position: relative;
+   padding: 10px;
 }
 
 .post {
