@@ -416,6 +416,13 @@ export async function updateUniqueElementInList(collection, documentId, action, 
     return result; 
 }
 
+/**
+ * Remove all values found in MongoDB key-value array in all documents
+ * @param {String} collection Name of MongoDB Collection
+ * @param {String} arrayField Key value to be queried
+ * @param {String} value Value to be removed 
+ * @param {String} functionName Name of function
+ */
 export async function removeElementFromAllDocuments(collection, arrayField, value, functionName){
     // Validate inputs 
     await checkInputsExistence(Array.from(arguments));

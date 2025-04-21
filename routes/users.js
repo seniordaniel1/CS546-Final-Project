@@ -43,7 +43,7 @@ router.get("/", async (req, res) => {
         })
     } catch (e) {
         // Something went wrong with the server!
-        return res.status(400).send();
+        return res.status(400).render('error', { title: "400 Error: Something went wrong", message: `${e}` })
     }
 });
 
@@ -54,7 +54,7 @@ router.post('/createPost', async (req, res) => {
         const { content, imageUrl } = req.body;
 
         if (!content) {
-            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new post" });
+            return res.status(500).json({ "Error": "Invalid inputs" });
         }
         const createdPost = await postData.createPost(user._id, content, imageUrl); 
         res.json(createdPost); 
@@ -70,7 +70,7 @@ router.post('/createComment', async(req, res) => {
         const user = req.user;
         const { content, postId } = req.body;
         if (!content) {
-            return res.status(500).render('error', { title: "500 Error", message: "Unable to create new comment" });
+            return res.status(500).json({"Error": "Invalid inputs"});
         }
         const newComment = await commentData.createComment(postId, user._id, content);
         newComment['user'] = user;
@@ -80,6 +80,144 @@ router.post('/createComment', async(req, res) => {
     }
 })
 
+// * Add a like 
+router.post('/addLike', async (req, res) => {
+    try {
+        // Grab postId & user details
+        const { postId } = req.body;
+        const user = req.user;
+        const userId = user._id;
+        const post = await postData.getPostById(postId);
+
+        // Get all users who liked and disliked the post 
+        const userPostLikes = post.likes || [];
+        const userPostDislikes = post.dislikes || [];
+
+        // If user has already liked the post, change nothing with +0 change to likeScore
+        if (userPostLikes.includes(userId)) {
+            const ans = {
+                post: { ...post, likes: userPostLikes, dislikes: userPostDislikes },
+                user: user,
+                alreadyLiked: true,
+                alreadyDisliked: false,
+                likeScore: userPostLikes.length - userPostDislikes.length,
+                likes: userPostLikes,
+                dislikes: userPostDislikes
+            };
+            return res.json(ans);
+        }
+
+        // If user has disliked, you need to remove the dislike and then add the like with +2 change to likeScore
+        else if (userPostDislikes.includes(userId)) {
+            await postData.removeDislike(postId, userId);
+            await postData.addLike(postId, userId);
+
+            const updatedLikes = [...userPostLikes, userId];
+            const updatedDislikes = userPostDislikes.filter(id => id !== userId);
+
+            const ans = {
+                post: { ...post, likes: updatedLikes, dislikes: updatedDislikes },
+                user: user,
+                alreadyLiked: false,
+                alreadyDisliked: true,
+                likeScore: updatedLikes.length - updatedDislikes.length,
+                likes: updatedLikes,
+                dislikes: updatedDislikes
+            };
+            return res.json(ans);
+        }
+
+        // If user has neither liked nor disliked the post, you only need to add the like with +1 change to likeScore
+        else {
+            await postData.addLike(postId, userId);
+
+            const updatedLikes = [...userPostLikes, userId];
+
+            const ans = {
+                post: { ...post, likes: updatedLikes, dislikes: userPostDislikes },
+                user: user,
+                alreadyLiked: false,
+                alreadyDisliked: false,
+                likeScore: updatedLikes.length - userPostDislikes.length,
+                likes: updatedLikes,
+            };
+            return res.json(ans);
+        }
+    } catch (error) {
+        console.error('Error in addLike:', error);
+        res.status(500).send(error.message);
+    }
+});
+
+// * Add a dislike 
+router.post('/addDislike', async (req, res) => {
+    try {
+        // Grab postId & user details
+        const { postId } = req.body;
+        const user = req.user;
+        const userId = user._id;
+        const post = await postData.getPostById(postId);
+
+        // Get all users who liked and disliked the post 
+        const userPostLikes = post.likes || [];
+        const userPostDislikes = post.dislikes || [];
+
+        // If user has neither liked nor disliked the post 
+        if (!userPostLikes.includes(userId) && !userPostDislikes.includes(userId)) {
+            const updatedDislikes = [...userPostDislikes, userId];
+            const updatedLikes = userPostLikes.filter(id => id !== userId);
+            const ans = {
+                post: { ...post, likes: updatedLikes, dislikes: updatedDislikes },
+                user: user,
+                alreadyLiked: false,
+                alreadyDisliked: false,
+                likeScore: updatedLikes.length - updatedDislikes.length,
+                likes: updatedLikes,
+                dislikes: updatedDislikes
+            };
+            return res.json(ans);
+        }
+
+        // If user has liked the most, remove the like and add the dislike
+        else if (userPostLikes.includes(userId)) {
+            await postData.removeLike(postId, userId); 
+            await postData.addDislike(postId, userId);
+
+            const updatedDislikes = [...userPostDislikes, userId];
+            const updatedLikes = userPostLikes.filter(id => id !== userId);
+
+            const ans = {
+                post: { ...post, likes: updatedLikes, dislikes: updatedDislikes },
+                user: user,
+                alreadyLiked: true,
+                alreadyDisliked: false,
+                likeScore: updatedLikes.length - updatedDislikes.length,
+                likes: updatedLikes,
+                dislikes: updatedDislikes
+            };
+            return res.json(ans);
+        }
+
+        // If user has already disliked the post, do nothing
+        else if (userPostDislikes.includes(userId)) {
+            const ans = {
+                post: { ...post, likes: userPostLikes, dislikes: userPostDislikes },
+                user: user,
+                alreadyLiked: false,
+                alreadyDisliked: true,
+                likeScore: likeScore,
+                likes: userPostLikes,
+                dislikes: userPostDislikes
+            };
+            return res.json(ans);
+        }
+    } catch (error) {
+        console.error('Error in removeLike:', error);
+        res.status(500).send(error.message);
+    }
+});
+
+
 // * Print all followers by userId
 router.get("/:id/followers", async (req, res) => {
     try {
@@ -88,7 +226,7 @@ router.get("/:id/followers", async (req, res) => {
         const followers = await getUserJsonsFromUserIds(userFollowerList, "getUserFollowers");
         return res.render('getUserFollow', { user: user, list: followers, listType: "Followers", title: `${user.username}'s Followers` });
     } catch (error) {
-        return res.json(error);
+        return res.status(500).render('error', { title: "500 Error: Something went wrong", message: `${error}` });
     }
 })
 
@@ -100,10 +238,9 @@ router.get("/:id/following", async (req, res) => {
         const following = await getUserJsonsFromUserIds(userFollowingList, "getUserFollowing");
         return res.render('getUserFollow', { user: user, list: following, listType: "Following", title: `${user.username} Following List` });
     } catch (error) {
-        return res.json(error);
+        return res.status(500).render('error', { title: "500 Error: Something went wrong", message: `${error}` });
     }
 })
-
 
 export default router
 

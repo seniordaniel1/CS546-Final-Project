@@ -215,7 +215,7 @@ const exportedMethods = {
         const postCollection = await posts();
         const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'remove', 'likes', userID, 'removeLike');
         if (!updatedInfo)
-            throw new Error("Could not add like to post")
+            throw new Error("Could not remove like to post")
 
         // Return object with ID as string 
         updatedInfo._id = updatedInfo._id.toString();
