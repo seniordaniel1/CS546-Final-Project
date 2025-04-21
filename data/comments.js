@@ -1,5 +1,5 @@
 import { comments, users, posts } from "../config/mongoCollections.js";
-import { checkInputsExistence, checkNumArguments, isStr, trimArguments, validateIdAndReturnTrimmedId, getTodayDate, updateUniqueElementInList } from "../helpers.js";
+import { checkInputsExistence, checkNumArguments, isStr, trimArguments, validateIdAndReturnTrimmedId, getTodayDate, updateUniqueElementInList, strMaxLength } from "../helpers.js";
 import { userData, postData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
@@ -24,6 +24,9 @@ const exportedMethods = {
         postId = trimmedArgs[0];
         userId = await validateIdAndReturnTrimmedId(userId);
         text = trimmedArgs[2];
+
+        // Check that new comment is under 200 characters or less 
+        strMaxLength(text, 200, "createComment-text");
 
         // Set timestamp to current time 
         const timestamp = await getTodayDate();

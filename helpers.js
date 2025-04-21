@@ -262,6 +262,10 @@ export async function validateEmail(emailAdress, emailAddressStr) {
     emailAdress = emailAdress.toLowerCase();
     const isValid = EmailValidator.validate(emailAdress); 
 
+    // Check that the length of email does not exceed 254:
+    // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+    strMaxLength(emailAdress, 254, emailAddressStr);
+
     // Get all users and check if email is unique
     const users = await userData.getAllUsers();
     for (let i = 0; i < users.length; i++) {
@@ -412,6 +416,13 @@ export async function updateUniqueElementInList(collection, documentId, action, 
     return result; 
 }
 
+/**
+ * Remove all values found in MongoDB key-value array in all documents
+ * @param {String} collection Name of MongoDB Collection
+ * @param {String} arrayField Key value to be queried
+ * @param {String} value Value to be removed 
+ * @param {String} functionName Name of function
+ */
 export async function removeElementFromAllDocuments(collection, arrayField, value, functionName){
     // Validate inputs 
     await checkInputsExistence(Array.from(arguments));
@@ -533,8 +544,8 @@ export async function validatePassword(password, passwordStr) {
     await isStr(passwordStr, "validatePasswordStr");
     await isStr(password, passwordStr);
 
-    // Name must have no spaces
+    // Password must have no spaces
     await isSingleWord(password, passwordStr);
-    // Name must be liimited to 20 characters or less
+    // Password must be liimited to 20 characters or less
     await strMaxLength(password, 20, passwordStr);
 }
