@@ -1,36 +1,49 @@
-<h1>{{post.content}}</h1>
-{{#if post.imageUrl}}
-    <img src="{{post.imageUrl}}" alt="Post Image">
-{{/if}}
-<h2>Created by: <a href="/users/{{post.user._id}}">{{post.user.username}}</a></h2>
-<h2>Created at: {{post.timestamp}}</h2>
+<article class="post">
+    <div class="post-header">
+        <img class="post-avatar" src="/assets/default.png" alt="avatar">
+        <a class="post-user" href="/users/{{post.user._id}}">{{post.user.username}}</a>
+        <span class="post-timestamp">{{post.timestamp}}</span>
+    </div>
+    {{#if post.imageUrl}}
+    <img class="post-image" src="{{post.imageUrl}}" alt="Post Image">
+    {{/if}}
+    <div class="post-content">
+        {{post.content}}
+    </div>
+    <div class="post-footer">
+        <span><span class="icon">👍</span><span id="likesCount"><a
+                    href="/posts/{{post._id}}/likes">{{likes.length}}</a></span></span>
+        <span><span class="icon">👎</span><span id="dislikesCount"><a
+                    href="/posts/{{post._id}}/dislikes">{{dislikes.length}}</a></span></span>
+        <span>Like Score: <span id="likeScore">{{likeScore}}</span></span>
+    </div>
+    <div style="padding: 0 20px 20px 20px;">
+        <button id="likeButton" class="like-dislike-button">Like</button>
+        <button id="dislikeButton" class="like-dislike-button">Dislike</button>
+    </div>
+</article>
 
-<h2>Like Score: <span id="likeScore">{{likeScore}}</span></h2>
-<h2>Likes: <span id="likesCount"><a href="/posts/{{post._id}}/likes">{{likes.length}}</a></span></h2>
-<h2>Dislikes: <span id="dislikesCount"><a href="/posts/{{post._id}}/dislikes">{{dislikes.length}}</a></span></h2>
-<button id="likeButton" class="like-dislike-button">Like</button>
-<button id="dislikeButton" class="like-dislike-button">Dislike</button>
+<section>
+    <h2 style="color: #e7e9ea">Comments</h2>
+    {{#if user}}
+    <form id="newCommentForm">
+        <textarea name="content" maxlength="200" required></textarea>
+        <button type="submit">Post</button>
+    </form>
+    {{/if}}
 
-<h2>Comments</h2>
-
-{{#if user}}
-<form id="newCommentForm">
-    <textarea name="content" placeholder="Write your comment here..." maxlength="200" required></textarea>
-    <button type="submit">Post</button>
-</form>
-{{/if}}
-
-<ul id="commentsList">
-    {{#each comments}}
-    <li>
-        <a href="/users/{{this.userId}}">{{this.user.username}}</a>
-        <br>
-        {{this.text}}
-        <br>
-        {{this.timestamp}}
-    </li>
-    {{/each}}
-</ul>
+    <ul id="commentsList">
+        {{#each comments}}
+        <li>
+            <a href="/users/{{this.userId}}">{{this.user.username}}</a>
+            <br>
+            {{this.text}}
+            <br>
+            <span>{{this.timestamp}}</span>
+        </li>
+        {{/each}}
+    </ul>
+</section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/getPostById.js"></script>

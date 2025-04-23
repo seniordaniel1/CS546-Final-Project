@@ -9,8 +9,14 @@
 
 {{#each posts}}
 <article class="post">
-    <h2><a href="/posts/{{_id}}">{{userId}}</a></h2>
-    <p>{{content}}</p>
+    <div class="post-header">
+        <img class="post-avatar" src="/assets/default.png" alt="avatar">
+        <a class="post-user" href="/users/{{user._id}}">{{user.username}}</a>
+        <span class="post-timestamp">{{timestamp}}</span>
+    </div>
+    <div class="post-content">
+        {{content}}
+    </div>
 </article>
 {{/each}}
 

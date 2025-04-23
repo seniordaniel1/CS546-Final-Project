@@ -13,6 +13,7 @@ import "../config/passport-config.js";
 // https://blog.devops.dev/secure-your-nodejs-applications-with-express-xss-sanitizer-prevent-xss-attacks-effortlessly-e0f3d8a967fc
 import { xss } from 'express-xss-sanitizer';
 import bodyParser from 'body-parser';
+import { addUserJsonToInput } from "../helpers.js";
 
 const app = express();
 const staticDir = express.static('public');
@@ -60,10 +61,11 @@ const constructorMethod = (app) => {
 
     // Public routes -- Render home, login, and register pages
     app.get('/', async (req, res) => {
-        const posts = await postData.getAllPosts();
+        let posts = await postData.getAllPosts();
         // Sort posts by most recent
         // https://stackoverflow.com/questions/7555025/fastest-way-to-sort-an-array-by-timestamp
         posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        posts = await addUserJsonToInput(posts, "home");
         const user = req.user;
         res.render('home', { title: 'Home', posts: posts, user: user });
     });

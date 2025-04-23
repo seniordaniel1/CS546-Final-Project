@@ -33,9 +33,9 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const postList = await postData.getAllPosts();
-        return res.render('getAllPosts', {
-            title: "All Posts",
-            posts: postList
+        return res.render("getAllPosts", {
+          title: "All Posts",
+          posts: postList,
         });
         //return res.json(postList);
     } catch (e) {
