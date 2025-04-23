@@ -1,34 +1,54 @@
-<h1>{{user.firstName}} {{user.lastName}}</h1>
+<section class="user-profile">
+    <h1>{{user.firstName}} {{user.lastName}}</h1>
+    <div class="user-stats">
+        <div>
+            <strong>Followers:</strong>
+            <a href="/users/{{user._id}}/followers">{{user.followers.length}}</a>
+        </div>
+        <div>
+            <strong>Following:</strong>
+            <a href="/users/{{user._id}}/following">{{user.following.length}}</a>
+        </div>
+    </div>
+</section>
 
-<h2>
-    Followers: 
-    <a href="/users/{{user._id}}/followers">{{user.followers.length}}</a>
-</h2>
-<h2>
-    Following:
-    <a href="/users/{{user._id}}/following">{{user.following.length}}</a>
-</h2>
+<section>
+    <h2>Posts ({{posts.length}})</h2>
+    {{#if posts.length}}
+    {{#each posts}}
+    <a href="/posts/{{_id}}" class="post-link">
+    <article class="post">
+        <div class="post-header">
+            <img class="post-avatar" src="/assets/default.png" alt="avatar">
+            <a class="post-user" href="/users/{{../user._id}}">{{../user.username}}</a>
+            <span class="post-timestamp">{{timestamp}}</span>
+        </div>
+        <a href="/posts/{{_id}}" class="post-link">
+            <div class="post-content">
+                {{content}}
+            </div>
+        </a>
+    </article>
+    </a>
+    {{/each}}
+    {{else}}
+    <p class="empty-msg">No posts yet.</p>
+    {{/if}}
+</section>
 
-<h3>Posts: {{posts.length}}</h3>
-{{#each posts}}
-<a href="/posts/{{this._id}}">
-    <ul>
+<section>
+    <h2>Comments ({{comments.length}})</h2>
+    {{#if comments.length}}
+    <ul id="commentsList">
+        {{#each comments}}
         <li>
-            {{this.content}}
+            On <a href="/posts/{{postId}}">this post</a>:<br>
+            {{text}}<br>
+            <span>{{timestamp}}</span>
         </li>
+        {{/each}}
     </ul>
-</a>
-{{/each}}
-
-<h3>Comments: {{comments.length}}</h3>
-{{#each comments}}
-<a href="/posts/{{this.postId}}">
-    <ul>
-        <li>
-            {{this.text}}
-            <br>
-            {{this.timestamp}}
-        </li>
-    </ul>
-</a> 
-{{/each}}
+    {{else}}
+    <p class="empty-msg">No comments yet.</p>
+    {{/if}}
+</section>

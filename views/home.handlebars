@@ -8,16 +8,20 @@
 {{/if}}
 
 {{#each posts}}
+<a href="/posts/{{_id}}" class="post-link">
 <article class="post">
     <div class="post-header">
         <img class="post-avatar" src="/assets/default.png" alt="avatar">
         <a class="post-user" href="/users/{{user._id}}">{{user.username}}</a>
         <span class="post-timestamp">{{timestamp}}</span>
     </div>
-    <div class="post-content">
-        {{content}}
-    </div>
+    <a href="/posts/{{_id}}" class="post-link">
+        <div class="post-content">
+            {{content}}
+        </div>
+    </a>
 </article>
+</a>
 {{/each}}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

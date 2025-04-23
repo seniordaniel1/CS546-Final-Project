@@ -255,3 +255,101 @@ section {
   color: #8899a6;
   font-size: 0.95em;
 }
+
+#newPostForm {
+  max-width: 600px;
+  margin: 32px auto 24px auto;
+  background: #181c20;
+  border-radius: 16px;
+  padding: 20px 24px 16px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#newPostForm textarea {
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #23272f;
+  color: #e7e9ea;
+  padding: 12px;
+  font-size: 1.1em;
+  resize: vertical;
+  min-height: 60px;
+}
+
+#newPostForm button {
+  align-self: flex-end;
+  background: #222;
+  color: #e7e9ea;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#newPostForm button:hover {
+  background: #333;
+}
+
+.user-profile {
+  max-width: 600px;
+  margin: 32px auto 0 auto;
+  background: #181c20;
+  border-radius: 16px;
+  padding: 24px 24px 16px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 1px solid #222;
+  text-align: left;
+}
+
+.user-profile h1 {
+  margin-bottom: 8px;
+  color: #e7e9ea;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.user-stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 0;
+}
+
+.user-stats strong {
+  color: #e7e9ea;
+}
+
+.user-stats a {
+  color: #1da1f2;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+section > h2 {
+  color: #e7e9ea;
+  margin-bottom: 16px;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-align: left;
+}
+
+.empty-msg {
+  color: #8899a6;
+  text-align: left;
+  margin-left: 8px;
+}
+
+.post-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.post-link:hover .post {
+  box-shadow: 0 4px 20px rgba(29,161,242,0.2);
+  background: #22242a;
+  transition: box-shadow 0.2s, background 0.2s;
+}
