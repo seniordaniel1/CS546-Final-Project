@@ -10,25 +10,28 @@
             <a href="/users/{{user._id}}/following">{{user.following.length}}</a>
         </div>
     </div>
+    {{#unless isSelf}}
+    <button id="follow-btn" data-user-id="{{user._id}}">
+        {{#if isFollowing}}Unfollow{{else}}Follow{{/if}}
+    </button>
+    {{/unless}}
 </section>
 
 <section>
     <h2>Posts ({{posts.length}})</h2>
     {{#if posts.length}}
     {{#each posts}}
-    <a href="/posts/{{_id}}" class="post-link">
-    <article class="post">
-        <div class="post-header">
-            <img class="post-avatar" src="/assets/default.png" alt="avatar">
-            <a class="post-user" href="/users/{{../user._id}}">{{../user.username}}</a>
-            <span class="post-timestamp">{{timestamp}}</span>
-        </div>
-        <a href="/posts/{{_id}}" class="post-link">
-            <div class="post-content">
-                {{content}}
+    <a href="/posts/{{this._id}}" class="post-link">
+        <article class="post">
+            <div class="post-header">
+                <img class="post-avatar" src="/assets/default.png" alt="avatar">
+                <a class="post-user" href="/users/{{../user._id}}">{{../user.username}}</a>
+                <span class="post-timestamp">{{timestamp}}</span>
             </div>
-        </a>
-    </article>
+            <div class="post-content">
+                {{this.content}}
+            </div>
+        </article>
     </a>
     {{/each}}
     {{else}}
@@ -42,9 +45,9 @@
     <ul id="commentsList">
         {{#each comments}}
         <li>
-            On <a href="/posts/{{postId}}">this post</a>:<br>
-            {{text}}<br>
-            <span>{{timestamp}}</span>
+            On <a href="/posts/{{this.postId}}">this post</a>:<br>
+            {{this.text}}<br>
+            <span>{{this.timestamp}}</span>
         </li>
         {{/each}}
     </ul>
@@ -52,3 +55,6 @@
     <p class="empty-msg">No comments yet.</p>
     {{/if}}
 </section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/getUserById.js"></script>

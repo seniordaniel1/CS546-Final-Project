@@ -17,19 +17,74 @@ router.get("/logout", async (req, res) => {
     }
 });
 
+// API Route to add a follower
+router.post('/:id/addFollower', async (req, res) => {
+    try {
+        // Get viwed user & logged-in user
+        const userId = req.params.id;
+        const userIdFollower = req.user._id;
+
+        // Add follower 
+        await userData.addFollower(userIdFollower, userId);
+
+        // Get updated followers count
+        const updatedUser = await userData.getUserById(userId)
+        res.json({ newFollowersCount: updatedUser.followers.length });
+    } catch (error) {
+        console.log("Error", error)
+        res.status(500).send(error.message);
+    }
+});
+
+// API Route to remove follower
+router.post('/:id/removeFollower', async (req, res) => {
+    try {
+        // Get viwed user & logged-in user
+        const userId = req.params.id;
+        const userIdFollower = req.user._id;
+
+        // Remove follower 
+        await userData.removeFollower(userIdFollower, userId);
+
+        // Get updated followers count
+        const updatedUser = await userData.getUserById(userId)
+        res.json({ newFollowersCount: updatedUser.followers.length });
+    } catch (error) {
+        console.log("Error", error)
+        res.status(500).send(error.message);
+    }
+});
+
 // * Get user by ID
 router.get("/:id", async (req, res) => {
     try {
         // Validating that input is a valid user 
         const user = await userData.getUserById(req.params.id);
-        
+
         // Get all posts that user has made
         const posts = await postData.getPostsByUserId(user._id);
         // Get all comments that user has made 
         const comments = await commentData.getCommentsByUserId(user._id);
-        return res.render('getUserById', { user: user, title: `${user._id}`, posts: posts, comments: comments });
+
+        // Get the logged-in user's ID
+        const loggedInUserId = req.user._id
+
+        // Check if the logged-in user is following the user
+        const isFollowing = loggedInUserId && user.followers.includes(loggedInUserId);
+
+        // Check that user isnt looking at their own profile
+        const isSelf = loggedInUserId && loggedInUserId.toString() === user._id.toString();
+
+        return res.render('getUserById', {
+            user: user,
+            title: `${user._id}`,
+            posts: posts,
+            comments: comments,
+            isFollowing: isFollowing,
+            isSelf: isSelf
+        });
     } catch (e) {
-        return res.status(404).render('error', { title: "404 Error: User Not found", message: "User not found" })
+        return res.status(404).render('error', { title: "404 Error: User Not found", message: "User not found" });
     }
 });
 
