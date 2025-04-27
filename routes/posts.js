@@ -3,21 +3,6 @@ import express from 'express';
 import { addUserJsonToInput, getUserJsonsFromUserIds } from '../helpers.js';
 const router = express.Router();
 
-// * Get all posts
-router.get("/", async (req, res) => {
-    try {
-        const postList = await postData.getAllPosts();
-        return res.render("getAllPosts", {
-          title: "All Posts",
-          posts: postList,
-        });
-        //return res.json(postList);
-    } catch (e) {
-        // Something went wrong with the server!
-        return res.status(400).send();
-    }
-});
-
 // * Get Posts by UserId
 router.get('/user/:id', async (req, res) => {
     try {
