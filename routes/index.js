@@ -151,22 +151,16 @@ const constructorMethod = (app) => {
     });
 
     app.get('/about', (req, res) => {
-        res.render('about');
+        res.render('about', {title: "About"});
     })
 
     app.get('/contact', (req, res) => {
-        res.render('contact');
+        res.render('contact', {title: "Contact"});
     })
 
     // Protected routes
     app.use('/posts', ensureAuthenticated, postRoutes);
     app.use('/users', ensureAuthenticated, userRoutes);
-    
-    // ? For demo purposes only
-    // app.use('/profile', ensureAuthenticated, (req, res) => {
-    //     const user = req.user;
-    //     return res.json(user);
-    // })
 
     // Handle 404 errors
     app.use('*', (req, res) => {

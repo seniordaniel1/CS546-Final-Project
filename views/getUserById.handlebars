@@ -21,7 +21,6 @@
     <h2>Posts ({{posts.length}})</h2>
     {{#if posts.length}}
     {{#each posts}}
-    <a href="/posts/{{this._id}}" class="post-link">
         <article class="post">
             <div class="post-header">
                 <img class="post-avatar" src="/assets/default.png" alt="avatar">
@@ -29,7 +28,7 @@
                 <span class="post-timestamp">{{timestamp}}</span>
             </div>
             <div class="post-content">
-                {{this.content}}
+                <a href="/posts/{{this._id}}">{{this.content}}</a>
             </div>
             {{#if imageUrl}}
             <div class="post-image">
@@ -37,7 +36,6 @@
             </div>
             {{/if}}
         </article>
-    </a>
     {{/each}}
     {{else}}
     <p class="empty-msg">No posts yet.</p>

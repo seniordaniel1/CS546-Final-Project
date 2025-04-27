@@ -365,3 +365,8 @@ section > h2 {
 .bold {
   font-weight: bold;
 }
+
+.submit-post{
+    display:flex; 
+    justify-content:space-between;
+}
