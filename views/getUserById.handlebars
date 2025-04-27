@@ -2,11 +2,11 @@
     <h1>{{user.firstName}} {{user.lastName}}</h1>
     <div class="user-stats">
         <div>
-            <strong>Followers:</strong>
+            <span class="bold text-light">Followers:</span>
             <a href="/users/{{user._id}}/followers">{{user.followers.length}}</a>
         </div>
         <div>
-            <strong>Following:</strong>
+            <span class="bold text-light">Following:</span>
             <a href="/users/{{user._id}}/following">{{user.following.length}}</a>
         </div>
     </div>

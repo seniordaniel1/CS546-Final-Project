@@ -17,14 +17,14 @@
                     href="/posts/{{post._id}}/dislikes">{{dislikes.length}}</a></span></span>
         <span>Like Score: <span id="likeScore">{{likeScore}}</span></span>
     </div>
-    <div style="padding: 0 20px 20px 20px;">
+    <div class="like-dislike">
         <button id="likeButton" class="like-dislike-button">Like</button>
         <button id="dislikeButton" class="like-dislike-button">Dislike</button>
     </div>
 </article>
 
 <section>
-    <h2 style="color: #e7e9ea">Comments</h2>
+    <h2 class="text-light">Comments</h2>
     {{#if user}}
     <form id="newCommentForm">
         <textarea name="content" maxlength="200" required></textarea>
