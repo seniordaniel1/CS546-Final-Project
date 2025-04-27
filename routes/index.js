@@ -151,11 +151,11 @@ const constructorMethod = (app) => {
     });
 
     app.get('/about', (req, res) => {
-        res.render('about');
+        res.render('about', {title: "About"});
     })
 
     app.get('/contact', (req, res) => {
-        res.render('contact');
+        res.render('contact', {title: "Contact"});
     })
 
     // Protected routes
