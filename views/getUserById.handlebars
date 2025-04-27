@@ -28,7 +28,7 @@
                 <span class="post-timestamp">{{timestamp}}</span>
             </div>
             <div class="post-content">
-                {{this.content}}
+                <a href="/posts/{{this._id}}">{{this.content}}</a>
             </div>
             {{#if imageUrl}}
             <div class="post-image">
