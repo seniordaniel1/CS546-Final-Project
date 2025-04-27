@@ -1,26 +1,35 @@
 <h1>{{title}}</h1>
 
 {{#if user}}
-<form id="newPostForm">
+<form id="newPostForm" enctype="multipart/form-data">
     <textarea name="content" placeholder="Write your post here..." maxlength="200" required></textarea>
-    <button type="submit">Post</button>
+    <textarea name="imageUrl" placeholder="Attach an image url" maxlength="200"></textarea>
+
+    <div stlye="display:flex; justify-content:space-between;">
+        <button type="submit">Post</button>
+    </div>
 </form>
 {{/if}}
 
 {{#each posts}}
 <a href="/posts/{{_id}}" class="post-link">
-<article class="post">
-    <div class="post-header">
-        <img class="post-avatar" src="/assets/default.png" alt="avatar">
-        <a class="post-user" href="/users/{{user._id}}">{{user.username}}</a>
-        <span class="post-timestamp">{{timestamp}}</span>
-    </div>
-    <a href="/posts/{{_id}}" class="post-link">
-        <div class="post-content">
-            {{content}}
+    <article class="post">
+        <div class="post-header">
+            <img class="post-avatar" src="/assets/default.png" alt="avatar">
+            <a class="post-user" href="/users/{{user._id}}">{{user.username}}</a>
+            <span class="post-timestamp">{{timestamp}}</span>
         </div>
-    </a>
-</article>
+        <a href="/posts/{{_id}}" class="post-link">
+            <div class="post-content">
+                {{content}}
+            </div>
+            {{#if imageUrl}}
+            <div class="post-image">
+                <img src="{{imageUrl}}" alt="Post Image">
+            </div>
+            {{/if}}
+        </a>
+    </article>
 </a>
 {{/each}}
 

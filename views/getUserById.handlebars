@@ -31,6 +31,11 @@
             <div class="post-content">
                 {{this.content}}
             </div>
+            {{#if imageUrl}}
+            <div class="post-image">
+                <img src="{{imageUrl}}" alt="Post Image">
+            </div>
+            {{/if}}
         </article>
     </a>
     {{/each}}

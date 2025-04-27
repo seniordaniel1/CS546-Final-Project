@@ -4,9 +4,10 @@ import { userData, commentData } from "./index.js";
 import { ObjectId } from 'mongodb';
 
 const exportedMethods = {
-    createPost: async (userId, content, imageUrl=null) => {
+    createPost: async (userId, content, imageUrl = null) => {
         // Depending on if post has an image url, validate
-        if (imageUrl === null) {
+
+        if (imageUrl === null || imageUrl.length === 0) {
             const currArgs = [userId, content];
             await checkInputsExistence(currArgs);
             await checkNumArguments(currArgs, 2, "createPostNoImage");
@@ -22,7 +23,7 @@ const exportedMethods = {
 
         strMaxLength(content, 200, "createPost-content")
 
-        await userData.getUserById(userId);
+        const userProfile = await userData.getUserById(userId);
 
         // Trim All arguments:
         userId = await validateIdAndReturnTrimmedId(userId);
@@ -42,6 +43,7 @@ const exportedMethods = {
         // Create a new post object 
         const newPost = {
             userId: userId,
+            username: userProfile.username,
             content: content,
             imageUrl: imageUrl,
             timestamp: timestamp,
@@ -55,7 +57,7 @@ const exportedMethods = {
         const insertInfo = await postCollection.insertOne(newPost);
         if (!insertInfo.acknowledged || !insertInfo.insertedId)
             throw new Error('Could not add post');
-        
+
         // Get ID and return user by getUserById
         const newId = insertInfo.insertedId.toString();
         const currPost = await exportedMethods.getPostById(newId);
@@ -114,7 +116,7 @@ const exportedMethods = {
         const deletionInfo = await postCollection.findOneAndDelete({
             _id: new ObjectId(currPost._id)
         });
-        
+
         // Validate that deletion was successful
         if (!deletionInfo) {
             throw new Error(`Could not delete post with id of ${postId}`);
@@ -175,10 +177,10 @@ const exportedMethods = {
 
         if (!updatedInfo)
             throw new Error("Could not add like to post")
-        
+
         // Return object with ID as string 
         updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;        
+        return updatedInfo;
     },
     addDislike: async (postId, userID) => {
         // Validate inputs 
@@ -193,13 +195,13 @@ const exportedMethods = {
         // Add userId to posts.likes array 
         const postCollection = await posts();
         const updatedInfo = await updateUniqueElementInList(postCollection, postId, 'add', 'dislikes', userID, 'addDislike');
-        
+
         if (!updatedInfo)
             throw new Error("Could not add like to post")
 
         // Return object with ID as string 
         updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo; 
+        return updatedInfo;
     },
     removeLike: async (postId, userID) => {
         // Validate Arguments
@@ -219,7 +221,7 @@ const exportedMethods = {
 
         // Return object with ID as string 
         updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;  
+        return updatedInfo;
     },
     removeDislike: async (postId, userID) => {
         // Validate Arguments
